@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'reason.dart';
+import 'package:syncfusion_flutter_gauges/gauges.dart';
 
 class MoodSelectionScreen extends StatefulWidget {
   @override
@@ -7,12 +7,51 @@ class MoodSelectionScreen extends StatefulWidget {
 }
 
 class _MoodSelectionScreenState extends State<MoodSelectionScreen> {
-  String selectedMood = ''; // Variable to store the selected mood
+  double selectedMood = 2; // Default mood selection
 
-  void onMoodSelected(String mood) {
-    setState(() {
-      selectedMood = mood;
-    });
+  // Mapping of mood levels to icons, colors, and emojis
+  final List<Mood> moods = [
+    Mood(icon: Icons.sentiment_very_dissatisfied, color: Colors.red, emoji: "😡"),
+    Mood(icon: Icons.sentiment_dissatisfied, color: Colors.orange, emoji: "😞"),
+    Mood(icon: Icons.sentiment_neutral, color: Colors.yellow, emoji: "😐"),
+    Mood(icon: Icons.sentiment_satisfied, color: Colors.lightGreen, emoji: "😊"),
+    Mood(icon: Icons.sentiment_very_satisfied, color: Colors.green, emoji: "😁"),
+  ];
+
+  // Get mood text based on selection
+  String get moodText {
+    switch (selectedMood.round()) {
+      case 0:
+        return "Very Dissatisfied";
+      case 1:
+        return "Dissatisfied";
+      case 2:
+        return "Neutral";
+      case 3:
+        return "Satisfied";
+      case 4:
+        return "Very Satisfied";
+      default:
+        return "Neutral";
+    }
+  }
+
+  // Get the button text based on the selected mood
+  String get buttonText {
+    switch (selectedMood.round()) {
+      case 0:
+        return "Very Dissatisfied";
+      case 1:
+        return "Dissatisfied";
+      case 2:
+        return "Neutral";
+      case 3:
+        return "Satisfied";
+      case 4:
+        return "Very Satisfied";
+      default:
+        return "Neutral";
+    }
   }
 
   @override
@@ -28,26 +67,98 @@ class _MoodSelectionScreenState extends State<MoodSelectionScreen> {
             textAlign: TextAlign.center,
           ),
           SizedBox(height: 20),
-          // Semicircle mood selector (custom widget)
-          MoodSelectorWidget(onMoodSelected: onMoodSelected),
-          SizedBox(height: 30),
+          // Display selected mood emoji at the top
+          Text(
+            moods[selectedMood.round()].emoji,
+            style: TextStyle(fontSize: 100),
+          ),
+          SizedBox(height: 5), // Reduced space between emoji and gauge
+          // Semi-circular mood selector with increased size
+          SfRadialGauge(
+            axes: <RadialAxis>[
+              RadialAxis(
+                startAngle: 180,
+                endAngle: 0,
+                minimum: 0,
+                maximum: 4,
+                showTicks: false,
+                showLabels: false,
+                radiusFactor: 0.95, // Increased size of the circular gauge (scale the whole gauge)
+                pointers: <GaugePointer>[
+                  NeedlePointer(
+                    value: selectedMood,
+                    enableDragging: true,
+                    onValueChanged: (value) {
+                      setState(() {
+                        selectedMood = value;
+                      });
+                    },
+                    needleLength: 0.6, // Increased needle length
+                    needleColor: Colors.brown,
+                    knobStyle: KnobStyle(
+                      color: Colors.brown,
+                      sizeUnit: GaugeSizeUnit.factor,
+                      knobRadius: 0.12, // Increased knob radius
+                    ),
+                  ),
+                ],
+                ranges: <GaugeRange>[
+                  // Very Dissatisfied Range (Red)
+                  GaugeRange(
+                    startValue: 0,
+                    endValue: 0.8,
+                    color: Colors.red.withOpacity(1),
+                    startWidth: 60, // Increased width of the ranges
+                    endWidth: 60,
+                  ),
+                  // Dissatisfied Range (Orange)
+                  GaugeRange(
+                    startValue: 0.8,
+                    endValue: 1.6,
+                    color: Colors.orange.withOpacity(1),
+                    startWidth: 60,
+                    endWidth: 60,
+                  ),
+                  // Neutral Range (Yellow)
+                  GaugeRange(
+                    startValue: 1.6,
+                    endValue: 2.4,
+                    color: Colors.yellow.withOpacity(1),
+                    startWidth: 60,
+                    endWidth: 60,
+                  ),
+                  // Satisfied Range (Light Green)
+                  GaugeRange(
+                    startValue: 2.4,
+                    endValue: 3.2,
+                    color: Colors.lightGreen.withOpacity(1),
+                    startWidth: 60,
+                    endWidth: 60,
+                  ),
+                  // Very Satisfied Range (Green)
+                  GaugeRange(
+                    startValue: 3.2,
+                    endValue: 4,
+                    color: Colors.green.withOpacity(1),
+                    startWidth: 60,
+                    endWidth: 60,
+                  ),
+                ],
+              ),
+            ],
+          ),
+          SizedBox(height: 5), // Decreased gap further between gauge and button
           ElevatedButton(
             onPressed: () {
-              if (selectedMood.isNotEmpty) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ReasonSelectionScreen(mood: selectedMood),
-                  ),
-                );
-              } else {
-                // Show a message if no mood is selected
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text("Please select a mood")),
-                );
-              }
+              // Add functionality as needed
             },
-            child: Text("Continue"),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Color(0xFF00BCD4), // Button color
+            ),
+            child: Text(
+              buttonText, // Dynamically change button text based on mood
+              style: TextStyle(color: Colors.white), // White text color
+            ),
           ),
         ],
       ),
@@ -55,37 +166,10 @@ class _MoodSelectionScreenState extends State<MoodSelectionScreen> {
   }
 }
 
-class MoodSelectorWidget extends StatelessWidget {
-  final Function(String) onMoodSelected;
+class Mood {
+  final IconData icon;
+  final Color color;
+  final String emoji;
 
-  MoodSelectorWidget({required this.onMoodSelected});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        IconButton(
-          icon: Icon(Icons.sentiment_very_dissatisfied, color: Colors.red, size: 50),
-          onPressed: () => onMoodSelected("Very Dissatisfied"),
-        ),
-        IconButton(
-          icon: Icon(Icons.sentiment_dissatisfied, color: Colors.orange, size: 50),
-          onPressed: () => onMoodSelected("Dissatisfied"),
-        ),
-        IconButton(
-          icon: Icon(Icons.sentiment_neutral, color: Colors.yellow, size: 50),
-          onPressed: () => onMoodSelected("Neutral"),
-        ),
-        IconButton(
-          icon: Icon(Icons.sentiment_satisfied, color: Colors.lightGreen, size: 50),
-          onPressed: () => onMoodSelected("Satisfied"),
-        ),
-        IconButton(
-          icon: Icon(Icons.sentiment_very_satisfied, color: Colors.green, size: 50),
-          onPressed: () => onMoodSelected("Very Satisfied"),
-        ),
-      ],
-    );
-  }
+  Mood({required this.icon, required this.color, required this.emoji});
 }

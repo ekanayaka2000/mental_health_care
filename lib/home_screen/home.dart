@@ -23,6 +23,7 @@ class MyApp extends StatelessWidget {
         ),
       ),
       home: HomePage(),
+      debugShowCheckedModeBanner: false,
     );
   }
 }
@@ -68,23 +69,17 @@ class _HomePageState extends State<HomePage> {
           _selectedIndex == 1 ? "Library" :
           _selectedIndex == 2 ? "Analytics" :
           "Profile",
-          style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold),
+          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
-        actions: [
-          IconButton(
-            icon: Icon(Icons.search, color: Colors.black),
-            onPressed: () {
-              print("Search button pressed");
-            },
-          ),
-        ],
       ),
       body: _pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
+        selectedItemColor: Color(0xFF00BCD4),
+        unselectedItemColor: Colors.grey,
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(icon: Icon(Icons.book), label: 'Library'),
@@ -136,7 +131,7 @@ class HomeContent extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text("How do you feel today?", style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold)),
+                Text("How do you feel today?", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                 SizedBox(height: 10),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -176,7 +171,7 @@ class HomeContent extends StatelessWidget {
             ],
           ),
           SizedBox(height: 20),
-          Text("Your Plans for today?", style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold)),
+          Text("Your Plans for today?", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
           Column(
             children: [
               _buildTimelinePlanItem(
