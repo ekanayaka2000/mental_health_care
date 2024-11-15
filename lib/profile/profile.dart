@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mental_health_care/home_screen/home.dart';
 
 class ProfilePage extends StatelessWidget {
   @override
@@ -43,11 +44,14 @@ class ProfilePage extends StatelessWidget {
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                // Handle profile update
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => HomePage()),
+                );// Handle profile update
               },
-              child: Text("Update Profile"),
+              child: Text("Update Profile" , style: TextStyle(fontSize: 16,color: Colors.white)),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.teal, // Replaces primary
+                backgroundColor: Color(0xFF00BCD4), // Replaces primary
                 padding: EdgeInsets.symmetric(horizontal: 32, vertical: 12),
               ),
             ),

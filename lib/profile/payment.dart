@@ -1,5 +1,5 @@
-// payment_method.dart
 import 'package:flutter/material.dart';
+import 'package:mental_health_care/home_screen/home.dart';
 
 class PaymentMethodScreen extends StatefulWidget {
   @override
@@ -41,7 +41,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                 );
               },
               child: Card(
-                color: Colors.lightBlueAccent.withOpacity(0.2),
+                color: Colors.cyanAccent,
                 child: ListTile(
                   leading: Icon(Icons.add, color: Colors.black),
                   title: Text('Add New Card', style: TextStyle(color: Colors.black)),
@@ -99,7 +99,7 @@ class PaymentOptionTile extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Card(
-        color: Colors.lightBlueAccent.withOpacity(0.2),
+        color: Colors.cyanAccent, // Apply the color with opacity
         child: ListTile(
           leading: Icon(icon, color: Colors.black),
           title: Text(title, style: TextStyle(color: Colors.black)),
@@ -114,7 +114,7 @@ class AddCardScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add Card', style: TextStyle(color: Colors.black)),
+        title: Text('Add Card', style: TextStyle(color: Colors.black , fontWeight: FontWeight.bold)),
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
@@ -137,10 +137,10 @@ class AddCardScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text('0000 0000 0000 0000', style: TextStyle(fontSize: 18, color: Colors.white)),
+                    Text('0000 0000 0000 0000', style: TextStyle(fontSize: 18, color: Colors.black , fontWeight: FontWeight.bold)),
                     Spacer(),
-                    Text('Card Holder Name', style: TextStyle(color: Colors.white)),
-                    Text('Expiry Date 00/00', style: TextStyle(color: Colors.white)),
+                    Text('Card Holder Name', style: TextStyle(color: Colors.black ,fontWeight: FontWeight.bold)),
+                    Text('Expiry Date 00/00', style: TextStyle(color: Colors.black , fontWeight: FontWeight.bold)),
                   ],
                 ),
               ),
@@ -193,14 +193,21 @@ class AddCardScreen extends StatelessWidget {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  // Navigate to home.dart after pressing the button
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => HomePage()), // Replace with your HomePage widget
+                  );
+                },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.cyan,
+                  backgroundColor: Color(0xFF00BCD4),
                   padding: EdgeInsets.symmetric(vertical: 16),
                   textStyle: TextStyle(fontSize: 16),
                 ),
-                child: Text('Save Card'),
+                child: Text('Save Card', style: TextStyle(color: Colors.white)),
               ),
+
             ),
           ],
         ),

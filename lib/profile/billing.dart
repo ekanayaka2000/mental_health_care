@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mental_health_care/profile/payment.dart';
 
 class BillingPage extends StatefulWidget {
   @override
@@ -60,13 +61,16 @@ class _BillingPageState extends State<BillingPage>
         SizedBox(height: 16),
         ElevatedButton(
           onPressed: () {
-            // Handle payment logic here
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => PaymentMethodScreen()), // Replace with your HomePage widget
+            );// Handle payment logic here
           },
           style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.cyan,
+            backgroundColor: Color(0xFF00BCD4),
             padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12),
           ),
-          child: Text('Pay Now', style: TextStyle(fontSize: 16)),
+          child: Text('Pay Now', style: TextStyle(fontSize: 16,color: Colors.white)),
         ),
       ],
     );
@@ -94,7 +98,7 @@ class _BillingPageState extends State<BillingPage>
           TabBar(
             controller: _tabController,
             indicatorColor: Colors.cyan,
-            labelColor: Colors.white,
+            labelColor: Colors.cyan,
             unselectedLabelColor: Colors.black,
             tabs: [
               Tab(

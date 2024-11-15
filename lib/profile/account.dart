@@ -4,6 +4,7 @@ import 'payment.dart';
 import 'billing.dart';
 import 'appearance.dart';
 import 'settings.dart';
+import '../login_page/login1.dart'; // Import the login1.dart file
 
 class AccountPage extends StatelessWidget {
   @override
@@ -25,7 +26,11 @@ class AccountPage extends StatelessWidget {
                 subtitle: Text("Enjoy all the benefits and explore the possibilities."),
                 trailing: Icon(Icons.arrow_forward),
                 onTap: () {
-                  // Handle plan upgrade tap
+                  // Navigate to the PaymentPage when tapped
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => BillingPage()),
+                  );
                 },
               ),
             ),
@@ -69,7 +74,11 @@ class AccountPage extends StatelessWidget {
               leading: Icon(Icons.logout, color: Colors.red),
               title: Text("Log out", style: TextStyle(color: Colors.red)),
               onTap: () {
-                // Handle log out
+                // Handle log out and navigate to login1.dart page
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => LoginPage()), // Navigate to login1.dart page
+                );
               },
             ),
           ],
