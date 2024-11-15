@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../home_screen/home.dart'; // Import the HomePage
 
 class NotesScreen extends StatelessWidget {
   final List<String> selectedFeelings;
@@ -9,12 +10,30 @@ class NotesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Mood Tracking')),
+      appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Center the "Notes" text
+            Center(
+              child: Text(
+                "Notes",
+                style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
+                textAlign: TextAlign.center,
+              ),
+            ),
+            SizedBox(height: 20),
             Text(
               "Selected Feelings:",
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -35,9 +54,9 @@ class NotesScreen extends StatelessWidget {
               controller: _notesController,
               maxLines: 5,
               decoration: InputDecoration(
-                hintText: "Add Notes..",
+                hintText: "Type here..",
                 border: OutlineInputBorder(),
-                fillColor: Colors.lightBlue[50],
+                fillColor: Color(0xFF00BCD4).withOpacity(0.2), // Set background color with low opacity
                 filled: true,
               ),
             ),
@@ -46,9 +65,22 @@ class NotesScreen extends StatelessWidget {
               child: ElevatedButton(
                 onPressed: () {
                   // Save or handle the notes
-                  Navigator.pop(context);
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => HomePage()), // Navigate to HomePage
+                  );
                 },
-                child: Text("Save"),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color(0xFF00BCD4), // Updated button color
+                  minimumSize: Size(double.infinity, 50),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30.0),
+                  ),
+                ),
+                child: Text(
+                  "Save",
+                  style: TextStyle(color: Colors.white), // Updated text color
+                ),
               ),
             ),
           ],

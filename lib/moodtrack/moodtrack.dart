@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mental_health_care/moodtrack/reason.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
 
 class MoodSelectionScreen extends StatefulWidget {
@@ -57,7 +58,11 @@ class _MoodSelectionScreenState extends State<MoodSelectionScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Mood Tracking')),
+      appBar: AppBar(
+        title: null, // Removed title
+        backgroundColor: Colors.transparent, // Transparent AppBar
+        elevation: 0, // No shadow
+      ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -150,7 +155,14 @@ class _MoodSelectionScreenState extends State<MoodSelectionScreen> {
           SizedBox(height: 5), // Decreased gap further between gauge and button
           ElevatedButton(
             onPressed: () {
-              // Add functionality as needed
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ReasonSelectionScreen(
+                    mood: moodText, // Pass the selected mood text to ReasonSelectionScreen
+                  ),
+                ),
+              );
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: Color(0xFF00BCD4), // Button color
@@ -160,6 +172,7 @@ class _MoodSelectionScreenState extends State<MoodSelectionScreen> {
               style: TextStyle(color: Colors.white), // White text color
             ),
           ),
+
         ],
       ),
     );
