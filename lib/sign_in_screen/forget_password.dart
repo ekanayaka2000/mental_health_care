@@ -105,21 +105,22 @@ class ForgetPasswordPage extends StatelessWidget {
                 hintText: "Enter your registered email",
               ),
             ),
-            Spacer(),
+            Spacer(), // Push button to bottom
             ElevatedButton(
               onPressed: () {
+                // Call function to send reset email and navigate to OTP page
                 _sendPasswordResetEmail(context);
               },
               style: ElevatedButton.styleFrom(
-                minimumSize: Size(double.infinity, 50),
-                backgroundColor: Color(0xFF00BCD4),
-                padding: EdgeInsets.symmetric(horizontal: 60, vertical: 16),
+                minimumSize: Size(double.infinity, 50), // Make button full width
+                backgroundColor: Color(0xFF00BCD4), // Button color
               ),
               child: Text(
                 "Send OTP Code",
-                style: TextStyle(color: Colors.white),
+                style: TextStyle(color: Colors.white), // Text color
               ),
             ),
+            SizedBox(height: 24),
           ],
         ),
       ),

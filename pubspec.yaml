@@ -20,6 +20,7 @@ dependencies:
   firebase_auth: ^5.3.4
   cloud_firestore: ^5.5.1
   cloud_functions: ^5.2.0
+  email_otp: ^3.0.2
 
 dev_dependencies:
   flutter_test:

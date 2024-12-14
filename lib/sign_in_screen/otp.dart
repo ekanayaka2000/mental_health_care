@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import '../sign_in_screen/secure_your_account.dart'; // Import the renamed SecureAccountPage
+import '../sign_in_screen/secure_your_account.dart'; // Import the SecureAccountPage
 
 class OTPPage extends StatefulWidget {
-  final String email; // Add email parameter
+  final String email; // Email passed from ForgetPasswordPage
 
   OTPPage({required this.email}); // Updated constructor to take email
 
@@ -12,11 +12,19 @@ class OTPPage extends StatefulWidget {
 
 class _OTPPageState extends State<OTPPage> {
   int _counter = 35;
+  List<TextEditingController> _otpControllers = List.generate(4, (index) => TextEditingController());
 
   @override
   void initState() {
     super.initState();
     _startTimer();
+  }
+
+  @override
+  void dispose() {
+    // Dispose controllers to free memory
+    _otpControllers.forEach((controller) => controller.dispose());
+    super.dispose();
   }
 
   void _startTimer() {
@@ -28,6 +36,22 @@ class _OTPPageState extends State<OTPPage> {
         _startTimer();
       }
     });
+  }
+
+  String _getEnteredOTP() {
+    // Concatenate OTP digits entered by the user
+    return _otpControllers.map((controller) => controller.text).join();
+  }
+
+  void _resendOTP() {
+    setState(() {
+      _counter = 35;
+      _startTimer();
+    });
+    // Here you would regenerate and resend a new OTP to the email
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("A new OTP has been sent to ${widget.email}")),
+    );
   }
 
   @override
@@ -57,17 +81,14 @@ class _OTPPageState extends State<OTPPage> {
             RichText(
               textAlign: TextAlign.center,
               text: TextSpan(
-                text: "Check your email inbox for a message from ",
+                text: "We have sent a one-time password to ",
                 style: TextStyle(color: Colors.black),
                 children: [
                   TextSpan(
-                    text: "Mental Health Care",
-                    style: TextStyle(color: Color(0xFF00BCD4)),
+                    text: "${widget.email}",
+                    style: TextStyle(color: Color(0xFF00BCD4), fontWeight: FontWeight.bold),
                   ),
-                  TextSpan(
-                    text: ".",
-                    style: TextStyle(color: Colors.black),
-                  ),
+                  TextSpan(text: "."), // Show email in the message
                 ],
               ),
             ),
@@ -78,9 +99,14 @@ class _OTPPageState extends State<OTPPage> {
                 return SizedBox(
                   width: 50,
                   child: TextField(
+                    controller: _otpControllers[index],
                     textAlign: TextAlign.center,
                     keyboardType: TextInputType.number,
-                    decoration: InputDecoration(border: OutlineInputBorder()),
+                    maxLength: 1,
+                    decoration: InputDecoration(
+                      counterText: "", // Remove character counter
+                      border: OutlineInputBorder(),
+                    ),
                   ),
                 );
               }),
@@ -97,10 +123,7 @@ class _OTPPageState extends State<OTPPage> {
                         text: "$_counter",
                         style: TextStyle(color: Colors.red),
                       ),
-                      TextSpan(
-                        text: " seconds.",
-                        style: TextStyle(color: Colors.black),
-                      ),
+                      TextSpan(text: " seconds."),
                     ],
                   ),
                 ),
@@ -108,12 +131,7 @@ class _OTPPageState extends State<OTPPage> {
             if (_counter == 0)
               Center(
                 child: TextButton(
-                  onPressed: () {
-                    setState(() {
-                      _counter = 35;
-                      _startTimer();
-                    });
-                  },
+                  onPressed: _resendOTP,
                   child: Text(
                     "Resend code",
                     style: TextStyle(color: Color(0xFF00BCD4)),
@@ -123,11 +141,14 @@ class _OTPPageState extends State<OTPPage> {
             Spacer(),
             ElevatedButton(
               onPressed: () {
+                // Validate OTP
+                // Here you can add logic to verify the OTP entered by the user
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text("OTP Verified, continue to reset password")),
+                );
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                    builder: (_) => SecureAccountPage(),
-                  ),
+                  MaterialPageRoute(builder: (_) => SecureAccountPage()), // Go to SecureAccountPage
                 );
               },
               child: Text(
