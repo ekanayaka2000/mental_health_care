@@ -1,43 +1,37 @@
 name: mental_health_care
-description: "A new Flutter project for mental health care."
-
-# Publishing settings
-publish_to: 'none' # Set to 'none' to prevent publishing to pub.dev.
+description: "A new Flutter project."
+publish_to: 'none'
 
 version: 1.0.0+1
 
 environment:
-  sdk: '>=3.5.3 <4.0.0' # Ensure compatibility with the Dart SDK.
+  sdk: ^3.5.3
 
 dependencies:
-  # Core Flutter SDK
   flutter:
     sdk: flutter
 
-  # Third-party packages
-  syncfusion_flutter_gauges: ^28.1.33 # For visual gauge widgets.
-  cupertino_icons: ^1.0.8            # iOS-style icons.
-  fl_chart: ^0.69.0                  # For creating charts.
-  table_calendar: ^3.0.1             # Calendar widgets.
-  flutter_spinkit: ^5.1.0            # Loading animations.
-  firebase_core: ^3.8.1              # Core Firebase package.
-  firebase_auth: ^5.3.4              # Firebase authentication.
-  cloud_firestore: ^5.5.1            # Firestore database.
+  syncfusion_flutter_gauges: ^20.2.47
+  cupertino_icons: ^1.0.8
+  fl_chart: ^0.69.0
+  table_calendar: ^3.0.1
+  flutter_spinkit: ^5.1.0
+  firebase_core: ^3.8.1
+  firebase_auth: ^5.3.4
 
 dev_dependencies:
   flutter_test:
-    sdk: flutter # For writing test cases.
-  flutter_lints: ^5.0.0 # Recommended linting rules.
+    sdk: flutter
+  flutter_lints: ^5.0.0
 
 flutter:
-  uses-material-design: true # Use Material Design components.
+  uses-material-design: true
 
-  # Asset declarations
   assets:
-    - assets/Logo.png         # Application logo.
+    - assets/Logo.png
     - assets/Logo1.png
-    - assets/facebook.png     # Facebook icon.
-    - assets/google.png       # Google icon.
-    - assets/apple.png        # Apple icon.
-    - assets/mindy.png        # Custom mindy asset.
-    - assets/coach.png        # Custom coach asset.
+    - assets/facebook.png
+    - assets/google.png
+    - assets/apple.png
+    - assets/mindy.png
+    - assets/coach.png
