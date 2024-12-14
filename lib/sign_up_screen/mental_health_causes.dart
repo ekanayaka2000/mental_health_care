@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart'; // Firebase Authentication
+import 'package:cloud_firestore/cloud_firestore.dart'; // Firestore Database
 import '../sign_up_screen/goals.dart'; // Import the GoalsPage
 import '../sign_up_screen/happiness.dart'; // Import the HappinessPage
 
@@ -12,6 +14,25 @@ class _MentalHealthCausesPageState extends State<MentalHealthCausesPage> {
   List<bool> selectedCauses = List.generate(5, (index) => false);
 
   bool get hasSelectedCauses => selectedCauses.contains(true);
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  // Function to store the selected causes to Firebase
+  Future<void> storeSelectedCauses(List<String> selectedCausesList) async {
+    User? user = _auth.currentUser;
+    if (user != null) {
+      try {
+        // Store the selected causes in Firestore under the user's document
+        await _firestore.collection('users').doc(user.uid).update({
+          'mental_health_causes': selectedCausesList,
+        });
+        print('Causes saved to Firestore');
+      } catch (e) {
+        print('Failed to store causes: $e');
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,8 +106,20 @@ class _MentalHealthCausesPageState extends State<MentalHealthCausesPage> {
               child: Center(
                 child: ElevatedButton(
                   onPressed: hasSelectedCauses
-                      ? () {
-                    Navigator.push(
+                      ? () async {
+                    // Gather the selected causes
+                    List<String> selectedCausesList = causes
+                        .asMap()
+                        .entries
+                        .where((entry) => selectedCauses[entry.key])
+                        .map((entry) => entry.value)
+                        .toList();
+
+                    // Store selected causes in Firebase
+                    await storeSelectedCauses(selectedCausesList);
+
+                    // Navigate to the HappinessPage
+                    Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(builder: (context) => HappinessPage()),
                     );

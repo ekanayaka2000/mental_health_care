@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart'; // Firebase Authentication
+import 'package:cloud_firestore/cloud_firestore.dart'; // Firestore Database
 import '../sign_up_screen/mental_health_causes.dart'; // Import the MentalHealthCausesPage
 import '../sign_in_screen/signin.dart'; // Import the SignInPage
 
@@ -12,6 +14,25 @@ class _HappinessPageState extends State<HappinessPage> {
   int selectedHappiness = -1;
 
   bool get hasSelectedHappiness => selectedHappiness != -1;
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  // Function to store the selected happiness level to Firebase
+  Future<void> storeHappinessLevel(int happinessLevelIndex) async {
+    User? user = _auth.currentUser;
+    if (user != null) {
+      try {
+        // Store the happiness level in Firestore under the user's document
+        await _firestore.collection('users').doc(user.uid).update({
+          'happiness_level': happinessLevels[happinessLevelIndex],
+        });
+        print('Happiness level saved to Firestore');
+      } catch (e) {
+        print('Failed to store happiness level: $e');
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -65,13 +86,13 @@ class _HappinessPageState extends State<HappinessPage> {
               child: ListView.builder(
                 itemCount: happinessLevels.length,
                 itemBuilder: (context, index) {
-                  return RadioListTile(
+                  return RadioListTile<int>(
                     title: Text(happinessLevels[index]),
                     value: index,
                     groupValue: selectedHappiness,
                     onChanged: (value) {
                       setState(() {
-                        selectedHappiness = value as int;
+                        selectedHappiness = value!;
                       });
                     },
                   );
@@ -85,7 +106,11 @@ class _HappinessPageState extends State<HappinessPage> {
               child: Center(
                 child: ElevatedButton(
                   onPressed: hasSelectedHappiness
-                      ? () {
+                      ? () async {
+                    // Store the selected happiness level to Firebase
+                    await storeHappinessLevel(selectedHappiness);
+
+                    // Navigate to the SignInPage
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(builder: (context) => SignInPage()),

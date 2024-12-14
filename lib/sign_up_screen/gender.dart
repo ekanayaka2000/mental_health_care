@@ -1,5 +1,6 @@
-// gender.dart
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart'; // Import Firestore
+import 'package:firebase_auth/firebase_auth.dart'; // Import FirebaseAuth
 import '../sign_up_screen/signup.dart'; // Import the signup.dart file
 import '../sign_up_screen/age.dart';   // Import the age.dart file
 
@@ -9,12 +10,30 @@ class GenderPage extends StatefulWidget {
 }
 
 class _GenderPageState extends State<GenderPage> {
-  String selectedGender = '';
+  String selectedGender = ''; // Track the selected gender
 
-  void selectGender(String gender) {
+  // Firebase Firestore instance
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  // Method to select a gender and store it in Firebase
+  Future<void> selectGenderAndStore(String gender) async {
     setState(() {
       selectedGender = gender;
     });
+
+    // Get current user ID
+    User? user = _auth.currentUser;
+    if (user != null) {
+      try {
+        // Store the selected gender in Firestore under the user's document
+        await _firestore.collection('users').doc(user.uid).update({
+          'gender': selectedGender,
+        });
+      } catch (e) {
+        print('Failed to update gender: $e');
+      }
+    }
   }
 
   @override
@@ -66,7 +85,7 @@ class _GenderPageState extends State<GenderPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     GestureDetector(
-                      onTap: () => selectGender('Male'),
+                      onTap: () => selectGenderAndStore('Male'),
                       child: GenderCard(
                         icon: Icons.male,
                         label: 'Male',
@@ -74,7 +93,7 @@ class _GenderPageState extends State<GenderPage> {
                       ),
                     ),
                     GestureDetector(
-                      onTap: () => selectGender('Female'),
+                      onTap: () => selectGenderAndStore('Female'),
                       child: GenderCard(
                         icon: Icons.female,
                         label: 'Female',
@@ -85,7 +104,7 @@ class _GenderPageState extends State<GenderPage> {
                 ),
                 SizedBox(height: 100),
                 TextButton(
-                  onPressed: () => selectGender('Prefer not to say'),
+                  onPressed: () => selectGenderAndStore('Prefer not to say'),
                   child: Text(
                     'Prefer not to say',
                     style: TextStyle(
@@ -107,10 +126,17 @@ class _GenderPageState extends State<GenderPage> {
                   onPressed: selectedGender.isEmpty
                       ? null
                       : () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => AgePage()),
-                    );
+                    // Get the current userId
+                    User? user = _auth.currentUser;
+                    if (user != null) {
+                      // Pass userId to AgePage
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => AgePage(userId: user.uid),
+                        ),
+                      );
+                    }
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: selectedGender.isEmpty

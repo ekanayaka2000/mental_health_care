@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import '../sign_up_screen/age.dart'; // Import age page
+import 'package:cloud_firestore/cloud_firestore.dart'; // Import Firestore
+import 'package:firebase_auth/firebase_auth.dart'; // Import FirebaseAuth
+import '../sign_up_screen/happiness.dart'; // Import happiness page
 import '../sign_up_screen/mental_health_causes.dart'; // Import mental health causes page
 
 class GoalsPage extends StatefulWidget {
@@ -19,6 +21,29 @@ class _GoalsPageState extends State<GoalsPage> {
 
   bool get hasSelectedGoals => selectedGoals.contains(true);
 
+  // Firebase Firestore and FirebaseAuth instance
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  // Method to store selected goals in Firestore
+  Future<void> storeGoalsInFirestore() async {
+    User? user = _auth.currentUser;
+    if (user != null) {
+      try {
+        // Save selected goals to Firestore under the user's document
+        await _firestore.collection('users').doc(user.uid).update({
+          'goals': goals.asMap().entries
+              .where((entry) => selectedGoals[entry.key])
+              .map((entry) => entry.value)
+              .toList(),
+        });
+        print('Goals saved to Firestore');
+      } catch (e) {
+        print('Failed to save goals to Firestore: $e');
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,10 +53,10 @@ class _GoalsPageState extends State<GoalsPage> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () {
-            // Navigate back to the AgePage
+            // Navigate back to the MentalHealthCausesPage
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => AgePage()),
+              MaterialPageRoute(builder: (context) => MentalHealthCausesPage()),
             );
           },
         ),
@@ -40,29 +65,28 @@ class _GoalsPageState extends State<GoalsPage> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween, // Ensures that logo, list, and button are spaced properly
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             // Top section with logo, title, and description
             Column(
               children: [
-                // Logo at the top
                 Center(
                   child: Image.asset(
                     'assets/Logo1.png', // Replace with your logo asset path
                     height: 80, // Adjust the size of the logo
                   ),
                 ),
-                SizedBox(height: 20), // Space between logo and text
+                SizedBox(height: 20),
                 Text(
                   'What are your main goals?',
                   style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                  textAlign: TextAlign.center, // Center the title
+                  textAlign: TextAlign.center,
                 ),
                 SizedBox(height: 8),
                 Text(
                   'Select the options that best represent what you hope to achieve. (Select all that apply)',
                   style: TextStyle(fontSize: 16),
-                  textAlign: TextAlign.center, // Center the description
+                  textAlign: TextAlign.center,
                 ),
               ],
             ),
@@ -91,10 +115,14 @@ class _GoalsPageState extends State<GoalsPage> {
               child: Center(
                 child: ElevatedButton(
                   onPressed: hasSelectedGoals
-                      ? () {
-                    Navigator.push(
+                      ? () async {
+                    // Store the selected goals in Firestore
+                    await storeGoalsInFirestore();
+
+                    // Navigate to the HappinessPage after storing goals
+                    Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(builder: (context) => MentalHealthCausesPage()),
+                      MaterialPageRoute(builder: (context) => HappinessPage()),
                     );
                   }
                       : null, // Disabled if no goals are selected

@@ -1,15 +1,30 @@
-// age.dart
 import 'package:flutter/material.dart';
-import '../sign_up_screen/gender.dart'; // Import the gender.dart file
+import 'package:cloud_firestore/cloud_firestore.dart';  // Import Firestore package
 import '../sign_up_screen/goals.dart'; // Import the goals.dart file
+import 'package:firebase_auth/firebase_auth.dart'; // Import FirebaseAuth
 
 class AgePage extends StatefulWidget {
+  final String userId;  // Receive the userId to store data
+  AgePage({required this.userId});
+
   @override
   _AgePageState createState() => _AgePageState();
 }
 
 class _AgePageState extends State<AgePage> {
-  int selectedAge = 1;
+  int selectedAge = 1;  // Default age selection
+
+  // Function to save the selected age to Firebase
+  void saveAgeToFirestore(int age) async {
+    try {
+      await FirebaseFirestore.instance.collection('users').doc(widget.userId).update({
+        'age': age,
+      });
+      print('Age saved to Firestore: $age');
+    } catch (e) {
+      print('Error saving age to Firestore: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -92,13 +107,17 @@ class _AgePageState extends State<AgePage> {
               child: Center(
                 child: ElevatedButton(
                   onPressed: () {
+                    // Save the age to Firebase Firestore and navigate
+                    saveAgeToFirestore(selectedAge);
+
+                    // Navigate to the GoalsPage after saving the age
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => GoalsPage()),
                     );
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: selectedAge == null
+                    backgroundColor: selectedAge == 0
                         ? Colors.white
                         : Color(0xFF00BCD4),
                     minimumSize: Size(150, 50),
@@ -109,7 +128,7 @@ class _AgePageState extends State<AgePage> {
                   child: Text(
                     'Continue',
                     style: TextStyle(
-                      color: selectedAge == null ? Colors.black : Colors.white,
+                      color: selectedAge == 0 ? Colors.black : Colors.white,
                     ),
                   ),
                 ),
