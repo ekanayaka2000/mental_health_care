@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import '../sign_in_screen/secure_your_account.dart'; // Import the renamed SecureAccountPage
 
 class OTPPage extends StatefulWidget {
+  final String email; // Add email parameter
+
+  OTPPage({required this.email}); // Updated constructor to take email
+
   @override
   _OTPPageState createState() => _OTPPageState();
 }
@@ -54,11 +58,11 @@ class _OTPPageState extends State<OTPPage> {
               textAlign: TextAlign.center,
               text: TextSpan(
                 text: "Check your email inbox for a message from ",
-                style: TextStyle(color: Colors.black), // Default text color
+                style: TextStyle(color: Colors.black),
                 children: [
                   TextSpan(
                     text: "Mental Health Care",
-                    style: TextStyle(color: Color(0xFF00BCD4)), // Custom color for "Mental Health Care"
+                    style: TextStyle(color: Color(0xFF00BCD4)),
                   ),
                   TextSpan(
                     text: ".",
@@ -87,15 +91,15 @@ class _OTPPageState extends State<OTPPage> {
                 child: RichText(
                   text: TextSpan(
                     text: "You can resend the code in ",
-                    style: TextStyle(color: Colors.black), // Text before the counter
+                    style: TextStyle(color: Colors.black),
                     children: [
                       TextSpan(
-                        text: "$_counter", // Counter number
-                        style: TextStyle(color: Colors.red), // Red color for counter
+                        text: "$_counter",
+                        style: TextStyle(color: Colors.red),
                       ),
                       TextSpan(
                         text: " seconds.",
-                        style: TextStyle(color: Colors.black), // Text after the counter
+                        style: TextStyle(color: Colors.black),
                       ),
                     ],
                   ),
@@ -105,7 +109,6 @@ class _OTPPageState extends State<OTPPage> {
               Center(
                 child: TextButton(
                   onPressed: () {
-                    // Handle resending OTP code
                     setState(() {
                       _counter = 35;
                       _startTimer();
@@ -113,23 +116,27 @@ class _OTPPageState extends State<OTPPage> {
                   },
                   child: Text(
                     "Resend code",
-                    style: TextStyle(color: Color(0xFF00BCD4)), // Resend code color
+                    style: TextStyle(color: Color(0xFF00BCD4)),
                   ),
                 ),
               ),
-            Spacer(), // Pushes the button to the bottom
+            Spacer(),
             ElevatedButton(
               onPressed: () {
-                // Navigate to SecureAccountPage
-                Navigator.push(context, MaterialPageRoute(builder: (_) => SecureAccountPage()));
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => SecureAccountPage(),
+                  ),
+                );
               },
               child: Text(
                 "Continue",
-                style: TextStyle(color: Colors.white), // Text color
+                style: TextStyle(color: Colors.white),
               ),
               style: ElevatedButton.styleFrom(
-                minimumSize: Size(double.infinity, 50), // Make button full width
-                backgroundColor: Color(0xFF00BCD4), // Button color
+                minimumSize: Size(double.infinity, 50),
+                backgroundColor: Color(0xFF00BCD4),
                 padding: EdgeInsets.symmetric(horizontal: 60, vertical: 16),
               ),
             ),

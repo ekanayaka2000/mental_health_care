@@ -1,8 +1,49 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart'; // Import Firebase Auth
 import '../sign_in_screen/otp.dart'; // Import your OTP screen
 import '../sign_in_screen/signin.dart'; // Import your SignIn screen
 
 class ForgetPasswordPage extends StatelessWidget {
+  final TextEditingController _emailController = TextEditingController();
+
+  // Function to send password reset email
+  Future<void> _sendPasswordResetEmail(BuildContext context) async {
+    final String email = _emailController.text.trim();
+
+    if (email.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Please enter your email address.")),
+      );
+      return;
+    }
+
+    try {
+      // Send password reset email using Firebase Authentication
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+
+      // Navigate to OTP page after sending reset email
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => OTPPage(email: email), // Pass email to OTPPage
+        ),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Password reset email sent to $email")),
+      );
+    } on FirebaseAuthException catch (e) {
+      // Handle Firebase exceptions (e.g. user not found)
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error: ${e.message}")),
+      );
+    } catch (e) {
+      // Handle other errors
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("An unexpected error occurred.")),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -12,7 +53,10 @@ class ForgetPasswordPage extends StatelessWidget {
           icon: Icon(Icons.arrow_back),
           onPressed: () {
             // Navigate back to Sign In page
-            Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => SignInPage()));
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (_) => SignInPage()),
+            );
           },
         ),
       ),
@@ -31,11 +75,11 @@ class ForgetPasswordPage extends StatelessWidget {
               textAlign: TextAlign.center,
               text: TextSpan(
                 text: "Enter your email address to your ",
-                style: TextStyle(color: Colors.black), // Default text color
+                style: TextStyle(color: Colors.black),
                 children: [
                   TextSpan(
                     text: "Mental Health Care",
-                    style: TextStyle(color: Color(0xFF00BCD4),fontWeight: FontWeight.bold), // Custom color for "Mental Health Care"
+                    style: TextStyle(color: Color(0xFF00BCD4), fontWeight: FontWeight.bold),
                   ),
                   TextSpan(
                     text: " account. We will send you a one-time password to reset your password.",
@@ -54,27 +98,28 @@ class ForgetPasswordPage extends StatelessWidget {
             ),
             SizedBox(height: 8),
             TextField(
+              controller: _emailController,
               decoration: InputDecoration(
                 prefixIcon: Icon(Icons.email),
                 border: OutlineInputBorder(),
+                hintText: "Enter your registered email",
               ),
             ),
-            Spacer(), // Push button to bottom
+            Spacer(),
             ElevatedButton(
               onPressed: () {
-                // Navigate to OTP page
-                Navigator.push(context, MaterialPageRoute(builder: (_) => OTPPage()));
+                _sendPasswordResetEmail(context);
               },
               style: ElevatedButton.styleFrom(
-                minimumSize: Size(double.infinity, 50), // Make button full width
-                backgroundColor: Color(0xFF00BCD4), // Button color
+                minimumSize: Size(double.infinity, 50),
+                backgroundColor: Color(0xFF00BCD4),
+                padding: EdgeInsets.symmetric(horizontal: 60, vertical: 16),
               ),
               child: Text(
                 "Send OTP Code",
-                style: TextStyle(color: Colors.white), // Text color
+                style: TextStyle(color: Colors.white),
               ),
             ),
-            SizedBox(height: 24),
           ],
         ),
       ),

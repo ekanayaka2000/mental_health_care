@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart'; // Firebase Authentication
 import '../sign_up_screen/signup.dart'; // Import the SignUp page
 import '../home_screen/home.dart'; // Import the Home page
 import '../sign_in_screen/forget_password.dart'; // Import the Forget Password page
@@ -9,7 +10,52 @@ class SignInPage extends StatefulWidget {
 }
 
 class _SignInPageState extends State<SignInPage> {
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final FirebaseAuth _auth = FirebaseAuth.instance; // Firebase Auth instance
+
   bool _agreeToTerms = false; // Checkbox state
+  bool _isLoading = false; // Loading state for button
+
+  // Function to sign in the user
+  Future<void> _signInUser() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      // Sign in the user with email and password
+      await _auth.signInWithEmailAndPassword(
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
+      );
+
+      // Navigate to the Home page if successful
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => HomePage()),
+      );
+    } on FirebaseAuthException catch (e) {
+      // Handle sign-in errors
+      String message;
+      if (e.code == 'user-not-found') {
+        message = 'No user found for that email.';
+      } else if (e.code == 'wrong-password') {
+        message = 'Incorrect password.';
+      } else {
+        message = 'Failed to sign in. Please try again.';
+      }
+
+      // Show error message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(message)),
+      );
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +77,6 @@ class _SignInPageState extends State<SignInPage> {
             Center(
               child: Column(
                 children: [
-                  // Add your logo widget here
                   Image.asset(
                     'assets/Logo1.png', // Replace with your logo path
                     height: 100,
@@ -40,7 +85,7 @@ class _SignInPageState extends State<SignInPage> {
                 ],
               ),
             ),
-            Spacer(), // Push content towards the center
+            Spacer(),
             Center(
               child: Column(
                 children: [
@@ -52,6 +97,7 @@ class _SignInPageState extends State<SignInPage> {
               ),
             ),
             TextField(
+              controller: _emailController,
               decoration: InputDecoration(
                 labelText: "Email",
                 prefixIcon: Icon(Icons.email),
@@ -60,6 +106,7 @@ class _SignInPageState extends State<SignInPage> {
             ),
             SizedBox(height: 16),
             TextField(
+              controller: _passwordController,
               obscureText: true,
               decoration: InputDecoration(
                 labelText: "Password",
@@ -84,7 +131,7 @@ class _SignInPageState extends State<SignInPage> {
                     });
                   },
                 ),
-                Text("I agree to MindLink terms & conditions") // Updated text
+                Text("I agree to MindLink terms & conditions")
               ],
             ),
             GestureDetector(
@@ -94,7 +141,7 @@ class _SignInPageState extends State<SignInPage> {
               },
               child: Text("Forget Password?", style: TextStyle(color: Colors.red)),
             ),
-            Spacer(), // Push content towards the bottom
+            Spacer(),
             Center(child: Text("Or continue with")),
             SizedBox(height: 8),
             Row(
@@ -132,13 +179,22 @@ class _SignInPageState extends State<SignInPage> {
                 backgroundColor: Color(0xFF00BCD4), // Button color
                 foregroundColor: Colors.white, // Text color
               ),
-              onPressed: () {
-                // Navigate to Home page
-                Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => HomePage()));
+              onPressed: _isLoading
+                  ? null
+                  : () {
+                if (_emailController.text.isNotEmpty && _passwordController.text.isNotEmpty) {
+                  _signInUser(); // Attempt to sign in the user
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text("Please enter your email and password.")),
+                  );
+                }
               },
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 60.0, vertical: 16.0),
-                child: Text("Sign In"),
+                child: _isLoading
+                    ? CircularProgressIndicator(color: Colors.white)
+                    : Text("Sign In"),
               ),
             ),
             SizedBox(height: 24),
