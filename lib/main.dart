@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart'; // Import the generated Firebase options
 import '../splash_screen/splash_screen.dart';
 import '../profile/appearance.dart'; // Import AppearancePage
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized(); // Ensures Flutter is initialized before Firebase
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform, // Use Firebase options for the current platform
+  );
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  // Define a global ValueNotifier to manage the theme mode
   static final ValueNotifier<ThemeMode> themeNotifier = ValueNotifier(ThemeMode.system);
 
   @override
@@ -17,10 +22,10 @@ class MyApp extends StatelessWidget {
       builder: (context, ThemeMode currentMode, _) {
         return MaterialApp(
           debugShowCheckedModeBanner: false,
-          themeMode: currentMode, // Apply the current theme mode
-          theme: ThemeData.light(), // Light theme configuration
-          darkTheme: ThemeData.dark(), // Dark theme configuration
-          home: SplashScreen(), // Start with SplashScreen
+          themeMode: currentMode,
+          theme: ThemeData.light(),
+          darkTheme: ThemeData.dark(),
+          home: SplashScreen(),
         );
       },
     );
