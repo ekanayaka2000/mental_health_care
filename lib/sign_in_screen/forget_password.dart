@@ -1,13 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart'; // Import Firebase Auth
-import '../sign_in_screen/otp.dart'; // Import your OTP screen
-import '../sign_in_screen/signin.dart'; // Import your SignIn screen
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import '../sign_in_screen/otp.dart';
+import '../sign_in_screen/signin.dart';
 
-class ForgetPasswordPage extends StatelessWidget {
+class ForgetPasswordPage extends StatefulWidget {
+  @override
+  _ForgetPasswordPageState createState() => _ForgetPasswordPageState();
+}
+
+class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
   final TextEditingController _emailController = TextEditingController();
 
   // Function to send password reset email
-  Future<void> _sendPasswordResetEmail(BuildContext context) async {
+  Future<void> _sendPasswordResetEmail() async {
     final String email = _emailController.text.trim();
 
     if (email.isEmpty) {
@@ -18,26 +24,59 @@ class ForgetPasswordPage extends StatelessWidget {
     }
 
     try {
-      // Send password reset email using Firebase Authentication
       await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
 
-      // Navigate to OTP page after sending reset email
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (_) => OTPPage(email: email), // Pass email to OTPPage
+          builder: (_) => OTPPage(email: email),
         ),
       );
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Password reset email sent to $email")),
       );
     } on FirebaseAuthException catch (e) {
-      // Handle Firebase exceptions (e.g. user not found)
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Error: ${e.message}")),
       );
     } catch (e) {
-      // Handle other errors
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("An unexpected error occurred.")),
+      );
+    }
+  }
+
+  // Function to update the password in Firestore
+  Future<void> _updatePasswordInFirestore(String newPassword) async {
+    try {
+      User? user = FirebaseAuth.instance.currentUser;
+
+      if (user != null) {
+        await user.updatePassword(newPassword);
+
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .update({'password': newPassword}); // Store password securely
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Password updated successfully.")),
+        );
+
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => SignInPage()),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("User is not authenticated.")),
+        );
+      }
+    } on FirebaseAuthException catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error: ${e.message}")),
+      );
+    } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("An unexpected error occurred.")),
       );
@@ -52,7 +91,6 @@ class ForgetPasswordPage extends StatelessWidget {
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
-            // Navigate back to Sign In page
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (_) => SignInPage()),
@@ -105,19 +143,16 @@ class ForgetPasswordPage extends StatelessWidget {
                 hintText: "Enter your registered email",
               ),
             ),
-            Spacer(), // Push button to bottom
+            Spacer(),
             ElevatedButton(
-              onPressed: () {
-                // Call function to send reset email and navigate to OTP page
-                _sendPasswordResetEmail(context);
-              },
+              onPressed: _sendPasswordResetEmail,
               style: ElevatedButton.styleFrom(
-                minimumSize: Size(double.infinity, 50), // Make button full width
-                backgroundColor: Color(0xFF00BCD4), // Button color
+                minimumSize: Size(double.infinity, 50),
+                backgroundColor: Color(0xFF00BCD4),
               ),
               child: Text(
                 "Send OTP Code",
-                style: TextStyle(color: Colors.white), // Text color
+                style: TextStyle(color: Colors.white),
               ),
             ),
             SizedBox(height: 24),

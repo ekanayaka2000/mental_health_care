@@ -21,6 +21,8 @@ dependencies:
   cloud_firestore: ^5.5.1
   cloud_functions: ^5.2.0
   email_otp: ^3.0.2
+  firebase_storage: ^12.3.7
+  image_picker: ^1.1.2
 
 dev_dependencies:
   flutter_test:
