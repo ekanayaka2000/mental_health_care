@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'profile.dart';
 import 'payment.dart';
 import 'billing.dart';
@@ -7,6 +9,27 @@ import 'settings.dart';
 import '../login_page/login1.dart'; // Import the login1.dart file
 
 class AccountPage extends StatelessWidget {
+  final _firestore = FirebaseFirestore.instance;
+  final _auth = FirebaseAuth.instance;
+
+  Future<Map<String, String>> _fetchUserData() async {
+    final user = _auth.currentUser;
+    if (user == null) {
+      return {'name': 'Guest', 'email': 'guest@example.com'};
+    }
+
+    final doc = await _firestore.collection('users').doc(user.uid).get();
+    if (doc.exists) {
+      final data = doc.data();
+      return {
+        'name': data?['fullName'] ?? 'No Name',
+        'email': data?['email'] ?? user.email ?? 'No Email',
+      };
+    }
+
+    return {'name': 'No Name', 'email': user.email ?? 'No Email'};
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,15 +58,29 @@ class AccountPage extends StatelessWidget {
               ),
             ),
             SizedBox(height: 20),
-            ListTile(
-              leading: CircleAvatar(child: Icon(Icons.person)),
-              title: Text("Name"), // Replace with dynamic user data if available
-              subtitle: Text("name@gmail.com"), // Replace with dynamic email data if available
-              trailing: Icon(Icons.arrow_forward),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ProfilePage()),
+            FutureBuilder<Map<String, String>>(
+              future: _fetchUserData(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return CircularProgressIndicator();
+                } else if (snapshot.hasError) {
+                  return Text("Error loading user data");
+                } else if (!snapshot.hasData || snapshot.data == null) {
+                  return Text("No user data available");
+                }
+
+                final userData = snapshot.data!;
+                return ListTile(
+                  leading: CircleAvatar(child: Icon(Icons.person)),
+                  title: Text(userData['name']!),
+                  subtitle: Text(userData['email']!),
+                  trailing: Icon(Icons.arrow_forward),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => ProfilePage()),
+                    );
+                  },
                 );
               },
             ),
