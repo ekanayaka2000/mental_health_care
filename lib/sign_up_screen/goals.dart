@@ -119,10 +119,10 @@ class _GoalsPageState extends State<GoalsPage> {
                     // Store the selected goals in Firestore
                     await storeGoalsInFirestore();
 
-                    // Navigate to the HappinessPage after storing goals
+                    // Navigate to the MentalHealthCausesPage after storing goals
                     Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(builder: (context) => HappinessPage()),
+                      MaterialPageRoute(builder: (context) => MentalHealthCausesPage()),
                     );
                   }
                       : null, // Disabled if no goals are selected
