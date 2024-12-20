@@ -49,6 +49,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '20844826489',
     projectId: 'mental1234',
     authDomain: 'mental1234.firebaseapp.com',
+    databaseURL: 'https://mental1234-default-rtdb.firebaseio.com',
     storageBucket: 'mental1234.firebasestorage.app',
   );
 
@@ -57,6 +58,7 @@ class DefaultFirebaseOptions {
     appId: '1:20844826489:android:8c26d0d87b4d91b79329a8',
     messagingSenderId: '20844826489',
     projectId: 'mental1234',
+    databaseURL: 'https://mental1234-default-rtdb.firebaseio.com',
     storageBucket: 'mental1234.firebasestorage.app',
   );
 
@@ -65,7 +67,9 @@ class DefaultFirebaseOptions {
     appId: '1:20844826489:ios:c9e7a0b868ea81359329a8',
     messagingSenderId: '20844826489',
     projectId: 'mental1234',
+    databaseURL: 'https://mental1234-default-rtdb.firebaseio.com',
     storageBucket: 'mental1234.firebasestorage.app',
+    iosClientId: '20844826489-vbkhra29crd0b1dn6vicof3nn8qrp2dq.apps.googleusercontent.com',
     iosBundleId: 'com.example.mentalHealthCare',
   );
 
@@ -75,6 +79,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '20844826489',
     projectId: 'mental1234',
     authDomain: 'mental1234.firebaseapp.com',
+    databaseURL: 'https://mental1234-default-rtdb.firebaseio.com',
     storageBucket: 'mental1234.firebasestorage.app',
   );
+
 }
