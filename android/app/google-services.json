@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "20844826489",
+    "firebase_url": "https://mental1234-default-rtdb.firebaseio.com",
     "project_id": "mental1234",
     "storage_bucket": "mental1234.firebasestorage.app"
   },
@@ -12,7 +13,12 @@
           "package_name": "com.example.mental_health_care"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "20844826489-suabt0t5i5lbcifd955aibefj0eq3ov9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyBXby4Os1y_X7KdT1X4HIm_BxRDN3x7S0g"
@@ -20,7 +26,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "20844826489-suabt0t5i5lbcifd955aibefj0eq3ov9.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "20844826489-vbkhra29crd0b1dn6vicof3nn8qrp2dq.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.mentalHealthCare"
+              }
+            }
+          ]
         }
       }
     }
