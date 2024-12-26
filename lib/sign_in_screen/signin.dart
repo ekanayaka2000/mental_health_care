@@ -66,139 +66,173 @@ class _SignInPageState extends State<SignInPage> {
           icon: Icon(Icons.arrow_back),
           onPressed: () {
             // Navigate back to the signup page
-            Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => SignUpPage()));
+            Navigator.pushReplacement(
+                context, MaterialPageRoute(builder: (_) => SignUpPage()));
           },
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            Center(
-              child: Column(
-                children: [
-                  Image.asset(
-                    'assets/Logo1.png', // Replace with your logo path
-                    height: 100,
+      resizeToAvoidBottomInset: true, // Adjust layout for keyboard
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Center(
+                child: Column(
+                  children: [
+                    Image.asset(
+                      'assets/Logo1.png', // Replace with your logo path
+                      height: 100,
+                    ),
+                    SizedBox(height: 16),
+                  ],
+                ),
+              ),
+              SizedBox(height: 24),
+              Text(
+                "Welcome Back!",
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 8),
+              Text(
+                "Sign in to continue your journey.",
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 32),
+              TextField(
+                controller: _emailController,
+                decoration: InputDecoration(
+                  labelText: "Email",
+                  prefixIcon: Icon(Icons.email),
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              SizedBox(height: 16),
+              TextField(
+                controller: _passwordController,
+                obscureText: true,
+                decoration: InputDecoration(
+                  labelText: "Password",
+                  prefixIcon: Icon(Icons.lock),
+                  suffixIcon: IconButton(
+                    icon: Icon(Icons.visibility),
+                    onPressed: () {
+                      // Handle password visibility toggle
+                    },
                   ),
-                  SizedBox(height: 16),
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              SizedBox(height: 8),
+              Row(
+                children: [
+                  Checkbox(
+                    value: _agreeToTerms,
+                    onChanged: (value) {
+                      setState(() {
+                        _agreeToTerms = value!; // Toggle checkbox state
+                      });
+                    },
+                  ),
+                  Flexible(
+                    child: Text("I agree to MindLink terms & conditions"),
+                  ),
                 ],
               ),
-            ),
-            Spacer(),
-            Center(
-              child: Column(
+              GestureDetector(
+                onTap: () {
+                  // Navigate to Forget Password page
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) => ForgetPasswordPage()));
+                },
+                child: Text(
+                  "Forget Password?",
+                  style: TextStyle(color: Colors.red),
+                  textAlign: TextAlign.end,
+                ),
+              ),
+              SizedBox(height: 24),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color(0xFF00BCD4), // Button color
+                  foregroundColor: Colors.white, // Text color
+                ),
+                onPressed: _isLoading
+                    ? null
+                    : () {
+                  if (_emailController.text.isNotEmpty &&
+                      _passwordController.text.isNotEmpty) {
+                    _signInUser(); // Attempt to sign in the user
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                          content: Text(
+                              "Please enter your email and password.")),
+                    );
+                  }
+                },
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 60.0, vertical: 16.0),
+                  child: _isLoading
+                      ? CircularProgressIndicator(color: Colors.white)
+                      : Text("Sign In"),
+                ),
+              ),
+              SizedBox(height: 24),
+              Center(child: Text("Or continue with")),
+              SizedBox(height: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text("Welcome Back!", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-                  SizedBox(height: 8),
-                  Text("Sign in to continue your journey."),
-                  SizedBox(height: 24),
+                  IconButton(
+                    icon: Icon(Icons.facebook),
+                    onPressed: () {
+                      // Handle Facebook sign-in
+                    },
+                  ),
+                  SizedBox(width: 16),
+                  GestureDetector(
+                    onTap: () {
+                      // Handle Google sign-in
+                    },
+                    child: Image.asset(
+                      'assets/google.png',
+                      height: 32,
+                      width: 32,
+                    ),
+                  ),
+                  SizedBox(width: 16),
+                  IconButton(
+                    icon: Icon(Icons.apple),
+                    onPressed: () {
+                      // Handle Apple sign-in
+                    },
+                  ),
                 ],
               ),
-            ),
-            TextField(
-              controller: _emailController,
-              decoration: InputDecoration(
-                labelText: "Email",
-                prefixIcon: Icon(Icons.email),
-                border: OutlineInputBorder(),
-              ),
-            ),
-            SizedBox(height: 16),
-            TextField(
-              controller: _passwordController,
-              obscureText: true,
-              decoration: InputDecoration(
-                labelText: "Password",
-                prefixIcon: Icon(Icons.lock),
-                suffixIcon: IconButton(
-                  icon: Icon(Icons.visibility),
-                  onPressed: () {
-                    // Handle password visibility toggle
-                  },
-                ),
-                border: OutlineInputBorder(),
-              ),
-            ),
-            SizedBox(height: 8),
-            Row(
-              children: [
-                Checkbox(
-                  value: _agreeToTerms,
-                  onChanged: (value) {
-                    setState(() {
-                      _agreeToTerms = value!; // Toggle checkbox state
-                    });
-                  },
-                ),
-                Text("I agree to MindLink terms & conditions")
-              ],
-            ),
-            GestureDetector(
-              onTap: () {
-                // Navigate to Forget Password page
-                Navigator.push(context, MaterialPageRoute(builder: (_) => ForgetPasswordPage()));
-              },
-              child: Text("Forget Password?", style: TextStyle(color: Colors.red)),
-            ),
-            Spacer(),
-            Center(child: Text("Or continue with")),
-            SizedBox(height: 8),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                IconButton(
-                  icon: Icon(Icons.facebook),
-                  onPressed: () {
-                    // Handle Facebook sign-in
-                  },
-                ),
-                SizedBox(width: 16),
-                GestureDetector(
-                  onTap: () {
-                    // Handle Google sign-in
-                  },
-                  child: Image.asset(
-                    'assets/google.png',
-                    height: 16,
-                    width: 16,
+              SizedBox(height: 32),
+              GestureDetector(
+                onTap: () {
+                  // Navigate to SignUp page
+                  Navigator.pushReplacement(
+                      context, MaterialPageRoute(builder: (_) => SignUpPage()));
+                },
+                child: Text(
+                  "Don't have an account? Sign Up",
+                  style: TextStyle(
+                    color: Color(0xFF00BCD4),
+                    decoration: TextDecoration.underline,
                   ),
+                  textAlign: TextAlign.center,
                 ),
-                SizedBox(width: 16),
-                IconButton(
-                  icon: Icon(Icons.apple),
-                  onPressed: () {
-                    // Handle Apple sign-in
-                  },
-                ),
-              ],
-            ),
-            SizedBox(height: 16),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xFF00BCD4), // Button color
-                foregroundColor: Colors.white, // Text color
               ),
-              onPressed: _isLoading
-                  ? null
-                  : () {
-                if (_emailController.text.isNotEmpty && _passwordController.text.isNotEmpty) {
-                  _signInUser(); // Attempt to sign in the user
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text("Please enter your email and password.")),
-                  );
-                }
-              },
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 60.0, vertical: 16.0),
-                child: _isLoading
-                    ? CircularProgressIndicator(color: Colors.white)
-                    : Text("Sign In"),
-              ),
-            ),
-            SizedBox(height: 24),
-          ],
+            ],
+          ),
         ),
       ),
     );
