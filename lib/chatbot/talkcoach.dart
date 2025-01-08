@@ -13,6 +13,7 @@ class TalkCoachPage extends StatelessWidget {
           },
         ),
         title: Text('Talk with Coach'),
+        backgroundColor: Colors.blueAccent,
       ),
       body: ListView.builder(
         itemCount: 5, // Example count of 5 coaches
@@ -29,17 +30,40 @@ class TalkCoachPage extends StatelessWidget {
                 backgroundColor: Colors.purple[100],
                 child: Icon(Icons.person, color: Colors.white),
               ),
-              title: Text('Coach'),
-              subtitle: Text('Occupation'),
+              title: Text(
+                'Coach ${index + 1}', // Dynamically show coach number
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              subtitle: Text(
+                'Occupation ${index + 1}', // Example subtitle, you can replace with actual data
+                style: TextStyle(fontSize: 14),
+              ),
               trailing: ElevatedButton(
                 onPressed: () {
-                  // Navigate to chat page (you can replace this with ChatBotPage navigation)
+                  // Navigate to chat page
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => ChatBotPage()),
                   );
                 },
-                child: Text('Chat'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blueAccent, // Button color
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                ),
+                child: Text(
+                  'Chat',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
               ),
             ),
           );

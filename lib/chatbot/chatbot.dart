@@ -17,6 +17,8 @@ class _ChatBotPageState extends State<ChatBotPage> {
     if (_controller.text.isNotEmpty) {
       setState(() {
         messages.add({'text': _controller.text, 'isUser': true});
+        // Simulate a chatbot response
+        messages.add({'text': 'I\'m sorry to hear that. Have you considered talking to someone you trust or practicing mindfulness exercises?', 'isUser': false});
         _controller.clear();
       });
     }
@@ -33,6 +35,7 @@ class _ChatBotPageState extends State<ChatBotPage> {
           },
         ),
         title: Text('Chat with Mindy'),
+        backgroundColor: Colors.blueAccent,
       ),
       body: Column(
         children: [
@@ -44,13 +47,19 @@ class _ChatBotPageState extends State<ChatBotPage> {
                 return Align(
                   alignment: message['isUser'] ? Alignment.centerRight : Alignment.centerLeft,
                   child: Container(
-                    margin: EdgeInsets.all(8.0),
+                    margin: EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
                     padding: EdgeInsets.all(12.0),
                     decoration: BoxDecoration(
                       color: message['isUser'] ? Colors.lightBlueAccent : Colors.grey[300],
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(15),
                     ),
-                    child: Text(message['text']),
+                    child: Text(
+                      message['text'],
+                      style: TextStyle(
+                        fontSize: 16.0,
+                        color: message['isUser'] ? Colors.white : Colors.black,
+                      ),
+                    ),
                   ),
                 );
               },
@@ -64,15 +73,17 @@ class _ChatBotPageState extends State<ChatBotPage> {
                   child: TextField(
                     controller: _controller,
                     decoration: InputDecoration(
-                      hintText: 'Text Message',
+                      hintText: 'Type a message...',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(20),
                       ),
+                      filled: true,
+                      fillColor: Colors.grey[200],
                     ),
                   ),
                 ),
                 IconButton(
-                  icon: Icon(Icons.send),
+                  icon: Icon(Icons.send, color: Colors.blueAccent),
                   onPressed: _sendMessage,
                 ),
               ],

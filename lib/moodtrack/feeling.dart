@@ -46,19 +46,28 @@ class _FeelingSelectionScreenState extends State<FeelingSelectionScreen> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               "What is your exact feeling?",
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Colors.black87,
+              ),
               textAlign: TextAlign.center,
             ),
             SizedBox(height: 20),
             Expanded(
-              child: GridView.count(
-                crossAxisCount: 3,
-                mainAxisSpacing: 12.0,
-                crossAxisSpacing: 12.0,
-                children: feelings.map((feeling) {
+              child: GridView.builder(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 3,
+                  mainAxisSpacing: 12.0,
+                  crossAxisSpacing: 12.0,
+                ),
+                itemCount: feelings.length,
+                itemBuilder: (context, index) {
+                  final feeling = feelings[index];
                   final isSelected = selectedFeelings.contains(feeling);
                   return ElevatedButton(
                     onPressed: () => toggleFeelingSelection(feeling),
@@ -72,7 +81,7 @@ class _FeelingSelectionScreenState extends State<FeelingSelectionScreen> {
                       ),
                     ),
                   );
-                }).toList(),
+                },
               ),
             ),
             SizedBox(height: 20),
@@ -88,21 +97,20 @@ class _FeelingSelectionScreenState extends State<FeelingSelectionScreen> {
                   ),
                 );
               }
-                  : () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text("Please select at least one feeling")),
-                );
-              },
+                  : null,
               style: ElevatedButton.styleFrom(
                 backgroundColor: Color(0xFF00BCD4),
                 minimumSize: Size(double.infinity, 50),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30.0),
                 ),
+                padding: EdgeInsets.symmetric(vertical: 16),
               ),
-              child: Text("Continue", style: TextStyle(fontSize: 18, color: Colors.white)),
+              child: Text(
+                "Continue",
+                style: TextStyle(fontSize: 18, color: Colors.white),
+              ),
             ),
-
             SizedBox(height: 20),
           ],
         ),

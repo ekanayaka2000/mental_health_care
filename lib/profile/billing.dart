@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mental_health_care/profile/payment.dart';
 
 class BillingPage extends StatefulWidget {
   @override
@@ -22,57 +21,75 @@ class _BillingPageState extends State<BillingPage>
     super.dispose();
   }
 
-  Widget buildSubscriptionPlan(String title, String price, String duration) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text(
-          title,
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-        ),
-        SizedBox(height: 8),
-        Text(
-          price,
-          style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
-        ),
-        Text(
-          '/$duration',
-          style: TextStyle(fontSize: 16),
-        ),
-        SizedBox(height: 16),
-        Divider(color: Colors.blueAccent),
-        SizedBox(height: 8),
-        ...[
-          'Ad-free experience.',
-          'Unlock and unlimited access to all premium contents.',
-          'Advanced mood tracking with detailed insights and trend analysis.',
-          'Early access to new features and beta tests.',
-          'Priority customer support.',
-        ].map((benefit) => Padding(
-          padding: const EdgeInsets.symmetric(vertical: 4),
-          child: Row(
-            children: [
-              Icon(Icons.check_circle, color: Colors.black, size: 18),
-              SizedBox(width: 8),
-              Expanded(child: Text(benefit)),
-            ],
+  Widget _buildSubscriptionPlan(String title, String price, String duration) {
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            title,
+            style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            textAlign: TextAlign.center,
           ),
-        )),
-        SizedBox(height: 16),
-        ElevatedButton(
-          onPressed: () {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => PaymentMethodScreen()), // Replace with your HomePage widget
-            );// Handle payment logic here
-          },
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Color(0xFF00BCD4),
-            padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12),
+          SizedBox(height: 16),
+          Text(
+            price,
+            style: TextStyle(
+              fontSize: 48,
+              fontWeight: FontWeight.bold,
+              color: Colors.cyan,
+            ),
           ),
-          child: Text('Pay Now', style: TextStyle(fontSize: 16,color: Colors.white)),
-        ),
-      ],
+          Text(
+            '/$duration',
+            style: TextStyle(fontSize: 16, color: Colors.grey),
+          ),
+          SizedBox(height: 20),
+          Divider(color: Colors.cyan, thickness: 1),
+          SizedBox(height: 12),
+          ...[
+            'Ad-free experience.',
+            'Unlock unlimited access to all premium contents.',
+            'Advanced mood tracking with insights and trends.',
+            'Early access to new features and beta tests.',
+            'Priority customer support.',
+          ].map(
+                (benefit) => Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              child: Row(
+                children: [
+                  Icon(Icons.check_circle, color: Colors.green, size: 20),
+                  SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      benefit,
+                      style: TextStyle(fontSize: 14),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          SizedBox(height: 24),
+          ElevatedButton(
+            onPressed: () {
+              // Placeholder for payment/navigation
+              print("Navigating to Payment Method Screen");
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.cyan,
+              padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            child: Text(
+              'Pay Now',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -86,11 +103,11 @@ class _BillingPageState extends State<BillingPage>
           'Upgrade Plan',
           style: TextStyle(
             color: Colors.black,
-            fontWeight: FontWeight.bold,  // Set title to bold
+            fontWeight: FontWeight.bold,
           ),
         ),
         centerTitle: true,
-        elevation: 0,
+        elevation: 1,
       ),
       body: Column(
         children: [
@@ -100,36 +117,27 @@ class _BillingPageState extends State<BillingPage>
             indicatorColor: Colors.cyan,
             labelColor: Colors.cyan,
             unselectedLabelColor: Colors.black,
+            labelStyle: TextStyle(fontWeight: FontWeight.bold),
             tabs: [
-              Tab(
-                child: Container(
-                  padding: EdgeInsets.symmetric(vertical: 8),
-                  child: Text('Monthly'),
-                ),
-              ),
-              Tab(
-                child: Container(
-                  padding: EdgeInsets.symmetric(vertical: 8),
-                  child: Text('Yearly'),
-                ),
-              ),
+              Tab(text: 'Monthly'),
+              Tab(text: 'Yearly'),
             ],
           ),
           Expanded(
             child: TabBarView(
               controller: _tabController,
               children: [
-                Container(
-                  padding: EdgeInsets.all(16),
-                  child: buildSubscriptionPlan(
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: _buildSubscriptionPlan(
                     'MENTAL HEALTH CARE',
                     '\$5',
                     'Month',
                   ),
                 ),
-                Container(
-                  padding: EdgeInsets.all(16),
-                  child: buildSubscriptionPlan(
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: _buildSubscriptionPlan(
                     'MENTAL HEALTH CARE',
                     '\$35',
                     'Year',

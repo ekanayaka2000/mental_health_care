@@ -1,35 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'profile.dart';
 import 'payment.dart';
-import 'billing.dart';
-import 'appearance.dart';
 import 'settings.dart';
-import '../login_page/login1.dart'; // Import the login1.dart file
+import 'aboutUs.dart'; // Import the aboutUs.dart file
+import 'billing.dart'; // Import the billing.dart file for navigation
+import '../Login/Login.dart'; // Import the login1.dart file
 
 class AccountPage extends StatelessWidget {
-  final _firestore = FirebaseFirestore.instance;
-  final _auth = FirebaseAuth.instance;
-
-  Future<Map<String, String>> _fetchUserData() async {
-    final user = _auth.currentUser;
-    if (user == null) {
-      return {'name': 'Guest', 'email': 'guest@example.com'};
-    }
-
-    final doc = await _firestore.collection('users').doc(user.uid).get();
-    if (doc.exists) {
-      final data = doc.data();
-      return {
-        'name': data?['fullName'] ?? 'No Name',
-        'email': data?['email'] ?? user.email ?? 'No Email',
-      };
-    }
-
-    return {'name': 'No Name', 'email': user.email ?? 'No Email'};
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,38 +26,24 @@ class AccountPage extends StatelessWidget {
                 subtitle: Text("Enjoy all the benefits and explore the possibilities."),
                 trailing: Icon(Icons.arrow_forward),
                 onTap: () {
-                  // Navigate to the PaymentPage when tapped
+                  // Navigate to the BillingPage when tapped
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => BillingPage()),
+                    MaterialPageRoute(builder: (context) => BillingPage()), // Navigate to BillingPage
                   );
                 },
               ),
             ),
             SizedBox(height: 20),
-            FutureBuilder<Map<String, String>>(
-              future: _fetchUserData(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return CircularProgressIndicator();
-                } else if (snapshot.hasError) {
-                  return Text("Error loading user data");
-                } else if (!snapshot.hasData || snapshot.data == null) {
-                  return Text("No user data available");
-                }
-
-                final userData = snapshot.data!;
-                return ListTile(
-                  leading: CircleAvatar(child: Icon(Icons.person)),
-                  title: Text(userData['name']!),
-                  subtitle: Text(userData['email']!),
-                  trailing: Icon(Icons.arrow_forward),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => ProfilePage()),
-                    );
-                  },
+            ListTile(
+              leading: CircleAvatar(child: Icon(Icons.person)),
+              title: Text("Guest User"), // Hardcoded name
+              subtitle: Text("guest@example.com"), // Hardcoded email
+              trailing: Icon(Icons.arrow_forward),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ProfilePage()),
                 );
               },
             ),
@@ -90,8 +53,6 @@ class AccountPage extends StatelessWidget {
               shrinkWrap: true, // Makes ListView adapt its height
               children: [
                 _buildSettingsTile(context, Icons.payment, "Payment method", PaymentMethodScreen()),
-                _buildSettingsTile(context, Icons.subscriptions, "Billing & subscription", BillingPage()),
-                _buildSettingsTile(context, Icons.palette, "App appearance", AppearancePage()),
                 _buildSettingsTile(context, Icons.group, "Invite your friends", null), // Placeholder for invite feature
                 ListTile(
                   leading: Icon(Icons.settings),
@@ -101,6 +62,18 @@ class AccountPage extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => SettingsPage()),
+                    );
+                  },
+                ),
+                // New About Us section added here
+                ListTile(
+                  leading: Icon(Icons.info),
+                  title: Text("About Us"),
+                  trailing: Icon(Icons.arrow_forward),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => AboutUsPage()), // Navigate to About Us page
                     );
                   },
                 ),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mental_health_care/home_screen/home.dart';
+import '../Home/home.dart';
 
 class PaymentMethodScreen extends StatefulWidget {
   @override
@@ -14,10 +14,9 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
         title: Text(
           'Payment Method',
           style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-          textAlign: TextAlign.center,
         ),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
+        backgroundColor: Colors.white,
+        elevation: 1,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Navigator.of(context).pop(),
@@ -30,7 +29,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
           children: [
             Text(
               'Credit & Debit Card',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 10),
             GestureDetector(
@@ -41,17 +40,20 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                 );
               },
               child: Card(
-                color: Colors.cyanAccent,
+                color: Colors.cyanAccent.withOpacity(0.2),
                 child: ListTile(
-                  leading: Icon(Icons.add, color: Colors.black),
-                  title: Text('Add New Card', style: TextStyle(color: Colors.black)),
+                  leading: Icon(Icons.add, color: Colors.cyan),
+                  title: Text(
+                    'Add New Card',
+                    style: TextStyle(color: Colors.black),
+                  ),
                 ),
               ),
             ),
             SizedBox(height: 20),
             Text(
               'More Payment Options',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 10),
             PaymentOptionTile(
@@ -63,16 +65,16 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
             ),
             PaymentOptionTile(
               icon: Icons.payment,
-              title: 'Paypal',
+              title: 'PayPal',
               onTap: () {
-                // Handle Paypal selection
+                // Handle PayPal selection
               },
             ),
             PaymentOptionTile(
               icon: Icons.play_circle_filled,
-              title: 'Google Play',
+              title: 'Google Pay',
               onTap: () {
-                // Handle Google Play selection
+                // Handle Google Pay selection
               },
             ),
           ],
@@ -99,10 +101,13 @@ class PaymentOptionTile extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Card(
-        color: Colors.cyanAccent, // Apply the color with opacity
+        color: Colors.cyanAccent.withOpacity(0.2),
         child: ListTile(
-          leading: Icon(icon, color: Colors.black),
-          title: Text(title, style: TextStyle(color: Colors.black)),
+          leading: Icon(icon, color: Colors.cyan),
+          title: Text(
+            title,
+            style: TextStyle(color: Colors.black),
+          ),
         ),
       ),
     );
@@ -114,9 +119,12 @@ class AddCardScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add Card', style: TextStyle(color: Colors.black , fontWeight: FontWeight.bold)),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
+        title: Text(
+          'Add Card',
+          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+        ),
+        backgroundColor: Colors.white,
+        elevation: 1,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Navigator.of(context).pop(),
@@ -128,19 +136,28 @@ class AddCardScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Card(
-              color: Colors.cyanAccent,
+              color: Colors.cyanAccent.withOpacity(0.2),
               child: Container(
                 padding: EdgeInsets.all(16),
                 width: double.infinity,
                 height: 200,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text('0000 0000 0000 0000', style: TextStyle(fontSize: 18, color: Colors.black , fontWeight: FontWeight.bold)),
+                    Text(
+                      '0000 0000 0000 0000',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    ),
                     Spacer(),
-                    Text('Card Holder Name', style: TextStyle(color: Colors.black ,fontWeight: FontWeight.bold)),
-                    Text('Expiry Date 00/00', style: TextStyle(color: Colors.black , fontWeight: FontWeight.bold)),
+                    Text(
+                      'Card Holder Name',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    Text('Expiry Date: 00/00', style: TextStyle(fontWeight: FontWeight.bold)),
                   ],
                 ),
               ),
@@ -150,16 +167,17 @@ class AddCardScreen extends StatelessWidget {
               decoration: InputDecoration(
                 labelText: 'Card Holder Name',
                 filled: true,
-                fillColor: Colors.lightBlueAccent.withOpacity(0.2),
+                fillColor: Colors.cyanAccent.withOpacity(0.1),
                 border: OutlineInputBorder(),
               ),
             ),
             SizedBox(height: 10),
             TextField(
+              keyboardType: TextInputType.number,
               decoration: InputDecoration(
                 labelText: 'Card Number',
                 filled: true,
-                fillColor: Colors.lightBlueAccent.withOpacity(0.2),
+                fillColor: Colors.cyanAccent.withOpacity(0.1),
                 border: OutlineInputBorder(),
               ),
             ),
@@ -168,10 +186,11 @@ class AddCardScreen extends StatelessWidget {
               children: [
                 Expanded(
                   child: TextField(
+                    keyboardType: TextInputType.datetime,
                     decoration: InputDecoration(
                       labelText: 'Expiry Date',
                       filled: true,
-                      fillColor: Colors.lightBlueAccent.withOpacity(0.2),
+                      fillColor: Colors.cyanAccent.withOpacity(0.1),
                       border: OutlineInputBorder(),
                     ),
                   ),
@@ -179,10 +198,12 @@ class AddCardScreen extends StatelessWidget {
                 SizedBox(width: 10),
                 Expanded(
                   child: TextField(
+                    keyboardType: TextInputType.number,
+                    obscureText: true,
                     decoration: InputDecoration(
                       labelText: 'CVV',
                       filled: true,
-                      fillColor: Colors.lightBlueAccent.withOpacity(0.2),
+                      fillColor: Colors.cyanAccent.withOpacity(0.1),
                       border: OutlineInputBorder(),
                     ),
                   ),
@@ -194,20 +215,21 @@ class AddCardScreen extends StatelessWidget {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
-                  // Navigate to home.dart after pressing the button
                   Navigator.pushReplacement(
                     context,
-                    MaterialPageRoute(builder: (context) => HomePage()), // Replace with your HomePage widget
+                    MaterialPageRoute(builder: (context) => HomePage()),
                   );
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFF00BCD4),
+                  backgroundColor: Colors.cyan,
                   padding: EdgeInsets.symmetric(vertical: 16),
                   textStyle: TextStyle(fontSize: 16),
                 ),
-                child: Text('Save Card', style: TextStyle(color: Colors.white)),
+                child: Text(
+                  'Save Card',
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
-
             ),
           ],
         ),

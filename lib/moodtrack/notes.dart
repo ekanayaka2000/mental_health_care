@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../home_screen/home.dart'; // Import the HomePage
+import '../Home/home.dart'; // Import the HomePage
 
 class NotesScreen extends StatelessWidget {
   final List<String> selectedFeelings;
@@ -14,7 +14,7 @@ class NotesScreen extends StatelessWidget {
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.pop(context); // Navigate back to the previous page
           },
         ),
         backgroundColor: Colors.transparent,
@@ -42,36 +42,50 @@ class NotesScreen extends StatelessWidget {
             Wrap(
               spacing: 8.0,
               runSpacing: 8.0,
-              children: selectedFeelings.map((feeling) => Chip(label: Text(feeling))).toList(),
+              children: selectedFeelings.map((feeling) {
+                return Chip(
+                  label: Text(feeling),
+                  backgroundColor: Color(0xFF00BCD4),
+                  labelStyle: TextStyle(color: Colors.white),
+                );
+              }).toList(),
             ),
             SizedBox(height: 20),
             Text(
-              "Add notes?",
+              "Add notes:",
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 20),
+            SizedBox(height: 10),
             TextField(
               controller: _notesController,
               maxLines: 5,
               decoration: InputDecoration(
-                hintText: "Type here..",
+                hintText: "Type your thoughts here...",
                 border: OutlineInputBorder(),
                 fillColor: Color(0xFF00BCD4).withOpacity(0.2), // Set background color with low opacity
                 filled: true,
+                contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 12),
               ),
             ),
             Spacer(),
             Center(
               child: ElevatedButton(
                 onPressed: () {
-                  // Save or handle the notes
+                  // Show an alert if no notes are added
+                  if (_notesController.text.isEmpty) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text("Please add some notes before saving.")),
+                    );
+                    return;
+                  }
+                  // Navigate to HomePage if notes are added
                   Navigator.pushReplacement(
                     context,
-                    MaterialPageRoute(builder: (context) => HomePage()), // Navigate to HomePage
+                    MaterialPageRoute(builder: (context) => HomePage()),
                   );
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFF00BCD4), // Updated button color
+                  backgroundColor: Color(0xFF00BCD4), // Button color
                   minimumSize: Size(double.infinity, 50),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30.0),
@@ -79,7 +93,7 @@ class NotesScreen extends StatelessWidget {
                 ),
                 child: Text(
                   "Save",
-                  style: TextStyle(color: Colors.white), // Updated text color
+                  style: TextStyle(color: Colors.white),
                 ),
               ),
             ),

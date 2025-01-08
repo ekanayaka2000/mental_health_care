@@ -1,15 +1,13 @@
 plugins {
     id "com.android.application"
-    // START: FlutterFire Configuration
-    id 'com.google.gms.google-services'
-    // END: FlutterFire Configuration
     id "kotlin-android"
+    // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id "dev.flutter.flutter-gradle-plugin"
 }
 
 android {
     namespace = "com.example.mental_health_care"
-    compileSdkVersion 34 // Update this to the latest stable SDK version
+    compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
@@ -22,29 +20,25 @@ android {
     }
 
     defaultConfig {
+        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId = "com.example.mental_health_care"
-        minSdkVersion 23  // Updated to SDK 23 as required by firebase_auth
-        targetSdkVersion 34 // Update this to match your compile SDK version
-        versionCode 1
-        versionName "1.0.0"
+        // You can update the following values to match your application needs.
+        // For more information, see: https://flutter.dev/to/review-gradle-config.
+        minSdk = flutter.minSdkVersion
+        targetSdk = flutter.targetSdkVersion
+        versionCode = flutter.versionCode
+        versionName = flutter.versionName
     }
 
     buildTypes {
         release {
-            minifyEnabled true // Optional: Enable code shrinking for release builds
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.debug // Replace with your signingConfig for release builds
+            // TODO: Add your own signing config for the release build.
+            // Signing with the debug keys for now, so `flutter run --release` works.
+            signingConfig = signingConfigs.debug
         }
     }
 }
 
 flutter {
     source = "../.."
-}
-
-dependencies {
-    // Add dependencies if required
-    implementation platform('com.google.firebase:firebase-bom:32.1.0') // Firebase Bill of Materials
-    implementation 'com.google.firebase:firebase-auth' // Example Firebase Auth dependency
-    implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.9.0'
 }

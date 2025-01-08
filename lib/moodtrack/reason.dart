@@ -48,24 +48,18 @@ class _ReasonSelectionScreenState extends State<ReasonSelectionScreen> {
             ),
             SizedBox(height: 20),
             Expanded(
-              child: GridView.count(
-                crossAxisCount: 3,
-                mainAxisSpacing: 12.0,
-                crossAxisSpacing: 12.0,
-                children: [
-                  _buildReasonButton("Work"),
-                  _buildReasonButton("School"),
-                  _buildReasonButton("Family"),
-                  _buildReasonButton("Partner"),
-                  _buildReasonButton("Health"),
-                  _buildReasonButton("Friends"),
-                  _buildReasonButton("Weather"),
-                  _buildReasonButton("Hobbies"),
-                  _buildReasonButton("Exercise"),
-                  _buildReasonButton("Finances"),
-                  _buildReasonButton("Events"),
-                  _buildReasonButton("Travel"),
-                ],
+              child: GridView.builder(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 3,
+                  crossAxisSpacing: 12.0,
+                  mainAxisSpacing: 12.0,
+                  childAspectRatio: 2 / 1, // Adjust aspect ratio for better button fit
+                ),
+                itemCount: reasonList.length,
+                itemBuilder: (context, index) {
+                  String reason = reasonList[index];
+                  return _buildReasonButton(reason);
+                },
               ),
             ),
             SizedBox(height: 20),
@@ -94,7 +88,7 @@ class _ReasonSelectionScreenState extends State<ReasonSelectionScreen> {
                   borderRadius: BorderRadius.circular(30.0),
                 ),
               ),
-              child: Text("Continue", style: TextStyle(fontSize: 18,color: Colors.white)),
+              child: Text("Continue", style: TextStyle(fontSize: 18, color: Colors.white)),
             ),
             SizedBox(height: 20),
           ],
@@ -107,7 +101,11 @@ class _ReasonSelectionScreenState extends State<ReasonSelectionScreen> {
     final isSelected = selectedReasons.contains(reason);
     return ElevatedButton(
       onPressed: () => toggleReasonSelection(reason),
-      child: Text(reason),
+      child: Text(
+        reason,
+        textAlign: TextAlign.center,
+        style: TextStyle(fontWeight: FontWeight.bold),
+      ),
       style: ElevatedButton.styleFrom(
         backgroundColor: isSelected ? Colors.cyan : Colors.cyan[100],
         foregroundColor: Colors.black,
@@ -119,3 +117,8 @@ class _ReasonSelectionScreenState extends State<ReasonSelectionScreen> {
     );
   }
 }
+
+final List<String> reasonList = [
+  "Work", "School", "Family", "Partner", "Health", "Friends",
+  "Weather", "Hobbies", "Exercise", "Finances", "Events", "Travel"
+];
