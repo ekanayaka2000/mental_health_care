@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'mental_health_causes.dart'; // Import the MentalHealthCausesPage
-import '../SignIn/signin.dart'; // Import the SignInPage
+import 'created.dart'; // Import the CreatedPage
 
 class HappinessPage extends StatefulWidget {
   @override
@@ -17,7 +16,25 @@ class _HappinessPageState extends State<HappinessPage> {
   ];
   int selectedHappiness = -1;
 
-  bool get hasSelectedHappiness => selectedHappiness != -1;
+  void _handleFinishButtonPressed() {
+    if (selectedHappiness == -1) {
+      // Show a message if no happiness level is selected
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Please select your happiness level.'),
+          duration: const Duration(seconds: 2),
+        ),
+      );
+    } else {
+      // Navigate to the CreatedPage if happiness level is selected
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => CreatedPage(),
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -87,21 +104,9 @@ class _HappinessPageState extends State<HappinessPage> {
             Padding(
               padding: const EdgeInsets.only(bottom: 20.0),
               child: ElevatedButton(
-                onPressed: hasSelectedHappiness
-                    ? () {
-                  // Navigate to the SignInPage
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => SignInPage(),
-                    ),
-                  );
-                }
-                    : null, // Disabled if no happiness level is selected
+                onPressed: _handleFinishButtonPressed,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: hasSelectedHappiness
-                      ? const Color(0xFF00BCD4)
-                      : Colors.grey.shade400,
+                  backgroundColor: const Color(0xFF00BCD4),
                   minimumSize: const Size(double.infinity, 50),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(50),
