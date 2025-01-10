@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'Happiness.dart'; // Import happiness page
+import 'mental_health_causes.dart'; // Import the MentalHealthCausesPage
 
 class GoalsPage extends StatefulWidget {
   @override
@@ -82,21 +82,28 @@ class _GoalsPageState extends State<GoalsPage> {
 
             // Bottom "Continue" button
             Padding(
-              padding: const EdgeInsets.only(bottom: 20.0),
+              padding: const EdgeInsets.only(bottom: 50.0),
               child: ElevatedButton(
-                onPressed: hasSelectedGoals
-                    ? () {
-                  // Navigate to the HappinessPage
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => HappinessPage()),
-                  );
-                }
-                    : null, // Disable if no goals are selected
+                onPressed: () {
+                  if (hasSelectedGoals) {
+                    // Navigate to the MentalHealthCausesPage
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => MentalHealthCausesPage(),
+                      ),
+                    );
+                  } else {
+                    // Show SnackBar if no goals are selected
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text("Please select at least one goal."),
+                      ),
+                    );
+                  }
+                },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: hasSelectedGoals
-                      ? const Color(0xFF00BCD4)
-                      : Colors.grey.shade400,
+                  backgroundColor: const Color(0xFF00BCD4),
                   minimumSize: const Size(double.infinity, 50),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(50),
