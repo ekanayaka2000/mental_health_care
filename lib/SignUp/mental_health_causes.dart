@@ -29,7 +29,10 @@ class _MentalHealthCausesPageState extends State<MentalHealthCausesPage> {
           icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () {
             // Navigate back to the GoalsPage
-            Navigator.pop(context);
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => GoalsPage()),
+            );
           },
         ),
       ),
@@ -62,7 +65,7 @@ class _MentalHealthCausesPageState extends State<MentalHealthCausesPage> {
                 ),
               ],
             ),
-            const SizedBox(height: 32),
+            const SizedBox(height: 2),
 
             // Causes list
             Expanded(
@@ -85,30 +88,36 @@ class _MentalHealthCausesPageState extends State<MentalHealthCausesPage> {
 
             // Bottom "Continue" button
             Padding(
-              padding: const EdgeInsets.only(bottom: 20.0),
+              padding: const EdgeInsets.only(bottom: 40.0),
               child: ElevatedButton(
-                onPressed: hasSelectedCauses
-                    ? () {
-                  // Gather the selected causes
-                  List<String> selectedCausesList = causes
-                      .asMap()
-                      .entries
-                      .where((entry) => selectedCauses[entry.key])
-                      .map((entry) => entry.value)
-                      .toList();
+                onPressed: () {
+                  if (hasSelectedCauses) {
+                    // Gather the selected causes
+                    List<String> selectedCausesList = causes
+                        .asMap()
+                        .entries
+                        .where((entry) => selectedCauses[entry.key])
+                        .map((entry) => entry.value)
+                        .toList();
 
-                  // Navigate to the HappinessPage
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => HappinessPage()),
-                  );
-                }
-                    : null, // Disable button if no causes are selected
+                    // Navigate to the HappinessPage
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => HappinessPage()),
+                    );
+                  } else {
+                    // Show a message if no causes are selected
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Please select at least one issue.'),
+                        duration: Duration(seconds: 2),
+                      ),
+                    );
+                  }
+                },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: hasSelectedCauses
-                      ? const Color(0xFF00BCD4)
-                      : Colors.grey.shade400,
+                  backgroundColor: const Color(0xFF00BCD4),
                   minimumSize: const Size(double.infinity, 50),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(50),
