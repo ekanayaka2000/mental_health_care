@@ -8,6 +8,7 @@ class GenderPage extends StatefulWidget {
 
 class _GenderPageState extends State<GenderPage> {
   String selectedGender = ''; // Track the selected gender
+  bool _isLoading = false; // Track loading state (you can use this for future enhancements like a loading indicator)
 
   @override
   Widget build(BuildContext context) {
@@ -94,7 +95,7 @@ class _GenderPageState extends State<GenderPage> {
                     'Prefer not to say',
                     style: TextStyle(
                       color: selectedGender == 'Prefer not to say'
-                          ? Colors.teal
+                          ? Color(0xFF00BCD4)
                           : Colors.black54,
                       fontWeight: selectedGender == 'Prefer not to say'
                           ? FontWeight.bold
@@ -107,22 +108,30 @@ class _GenderPageState extends State<GenderPage> {
 
             // Bottom section for the "Continue" button
             Padding(
-              padding: const EdgeInsets.only(bottom: 40.0),
+              padding: const EdgeInsets.only(bottom: 60.0),
               child: ElevatedButton(
-                onPressed: selectedGender.isEmpty
-                    ? null
+                onPressed: _isLoading
+                    ? null // Button will be disabled if _isLoading is true
                     : () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => AgePage(), // Navigate to AgePage
-                    ),
-                  );
+                  if (selectedGender.isEmpty) {
+                    // Show SnackBar if gender is not selected
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text("Please select a gender."),
+                      ),
+                    );
+                  } else {
+                    // Navigate to AgePage if gender is selected
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => AgePage(), // Navigate to AgePage
+                      ),
+                    );
+                  }
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: selectedGender.isEmpty
-                      ? Colors.grey[300]
-                      : const Color(0xFF00BCD4),
+                  backgroundColor: const Color(0xFF00BCD4), // Always keep the color as specified
                   minimumSize: const Size(double.infinity, 50),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(50),
@@ -131,7 +140,7 @@ class _GenderPageState extends State<GenderPage> {
                 child: Text(
                   'Continue',
                   style: TextStyle(
-                    color: selectedGender.isEmpty ? Colors.black45 : Colors.white,
+                    color: Colors.white, // Keep the text color white
                   ),
                 ),
               ),
@@ -161,7 +170,7 @@ class GenderCard extends StatelessWidget {
         Icon(
           icon,
           size: 50,
-          color: isSelected ? Colors.teal : Colors.black54,
+          color: isSelected ? Color(0xFF00BCD4) : Colors.black54,
         ),
         const SizedBox(height: 8),
         Text(
