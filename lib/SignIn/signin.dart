@@ -151,41 +151,6 @@ class _SignInPageState extends State<SignInPage> {
               ),
             ),
             SizedBox(height: 24),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    // Implement Facebook login logic here
-                  },
-                  child: Image.asset(
-                    'assets/facebook.png',
-                    height: 40,
-                  ),
-                ),
-                SizedBox(width: 16),
-                GestureDetector(
-                  onTap: () {
-                    // Implement Google login logic here
-                  },
-                  child: Image.asset(
-                    'assets/google.png',
-                    height: 40,
-                  ),
-                ),
-                SizedBox(width: 16),
-                GestureDetector(
-                  onTap: () {
-                    // Implement Apple login logic here
-                  },
-                  child: Image.asset(
-                    'assets/apple.png',
-                    height: 40,
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 24),
             GestureDetector(
               onTap: () {
                 Navigator.pushReplacement(
@@ -195,7 +160,6 @@ class _SignInPageState extends State<SignInPage> {
                 "Don't have an account? Sign Up",
                 style: TextStyle(
                   color: Color(0xFF00BCD4),
-                  decoration: TextDecoration.underline,
                 ),
                 textAlign: TextAlign.center,
               ),
