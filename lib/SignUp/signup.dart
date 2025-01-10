@@ -112,7 +112,11 @@ class _SignUpPageState extends State<SignUpPage> {
                   children: [
                     Checkbox(
                       value: _isChecked,
-                      onChanged: (value) => setState(() => _isChecked = value ?? false),
+                      onChanged: (value) {
+                        setState(() {
+                          _isChecked = value ?? false;
+                        });
+                      },
                     ),
                     const Expanded(
                       child: Text('I agree to MindLink terms & conditions'),
@@ -121,16 +125,24 @@ class _SignUpPageState extends State<SignUpPage> {
                 ),
                 const SizedBox(height: 16),
                 ElevatedButton(
-                  onPressed: _isChecked
-                      ? () {
-                    if (_formKey.currentState!.validate()) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => GenderPage()),
+                  onPressed: () {
+                    if (_isChecked) {
+                      if (_formKey.currentState!.validate()) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => GenderPage()),
+                        );
+                      }
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: const Text(
+                            "Please agree to the terms and conditions.",
+                          ),
+                        ),
                       );
                     }
-                  }
-                      : null,
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF00BCD4),
                     minimumSize: const Size(double.infinity, 50),
@@ -143,31 +155,20 @@ class _SignUpPageState extends State<SignUpPage> {
                     style: TextStyle(color: Colors.white),
                   ),
                 ),
-                const SizedBox(height: 16),
-                RichText(
-                  textAlign: TextAlign.center,
-                  text: TextSpan(
-                    text: 'Already have an account? ',
-                    style: const TextStyle(
-                      color: Colors.grey,
-                      fontSize: 16,
+                const SizedBox(height: 24),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (_) => SignInPage())
+                    );
+                  },
+                  child: Text(
+                    "Already have an account? Sign In",
+                    style: TextStyle(
+                      color: Color(0xFF00BCD4),
                     ),
-                    children: <TextSpan>[
-                      TextSpan(
-                        text: 'Sign in',
-                        style: const TextStyle(
-                          color: Colors.red,
-                          decoration: TextDecoration.underline,
-                        ),
-                        recognizer: TapGestureRecognizer()
-                          ..onTap = () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => SignInPage()),
-                            );
-                          },
-                      ),
-                    ],
+                    textAlign: TextAlign.center,
                   ),
                 ),
               ],
