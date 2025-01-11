@@ -48,7 +48,7 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(36.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [

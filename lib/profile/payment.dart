@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
-import '../Home/home.dart';
+import 'savedCard.dart';
 
 class PaymentMethodScreen extends StatefulWidget {
+  final Map<String, String>? savedCard;
+
+  PaymentMethodScreen({this.savedCard});
+
   @override
   _PaymentMethodScreenState createState() => _PaymentMethodScreenState();
 }
@@ -32,6 +36,20 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 10),
+            if (widget.savedCard != null)
+              Card(
+                color: Colors.cyanAccent.withOpacity(0.2),
+                child: ListTile(
+                  leading: Icon(Icons.credit_card, color: Colors.cyan),
+                  title: Text(
+                    widget.savedCard!['cardNumber']!,
+                    style: TextStyle(color: Colors.black),
+                  ),
+                  subtitle: Text(
+                    'Expires ${widget.savedCard!['expiryDate']}',
+                  ),
+                ),
+              ),
             GestureDetector(
               onTap: () {
                 Navigator.push(
@@ -50,64 +68,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                 ),
               ),
             ),
-            SizedBox(height: 20),
-            Text(
-              'More Payment Options',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 10),
-            PaymentOptionTile(
-              icon: Icons.apple,
-              title: 'Apple Pay',
-              onTap: () {
-                // Handle Apple Pay selection
-              },
-            ),
-            PaymentOptionTile(
-              icon: Icons.payment,
-              title: 'PayPal',
-              onTap: () {
-                // Handle PayPal selection
-              },
-            ),
-            PaymentOptionTile(
-              icon: Icons.play_circle_filled,
-              title: 'Google Pay',
-              onTap: () {
-                // Handle Google Pay selection
-              },
-            ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class PaymentOptionTile extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final VoidCallback onTap;
-
-  const PaymentOptionTile({
-    Key? key,
-    required this.icon,
-    required this.title,
-    required this.onTap,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Card(
-        color: Colors.cyanAccent.withOpacity(0.2),
-        child: ListTile(
-          leading: Icon(icon, color: Colors.cyan),
-          title: Text(
-            title,
-            style: TextStyle(color: Colors.black),
-          ),
         ),
       ),
     );
@@ -117,6 +78,10 @@ class PaymentOptionTile extends StatelessWidget {
 class AddCardScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final TextEditingController cardNumberController = TextEditingController();
+    final TextEditingController cardHolderNameController = TextEditingController();
+    final TextEditingController expiryDateController = TextEditingController();
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -135,35 +100,8 @@ class AddCardScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Card(
-              color: Colors.cyanAccent.withOpacity(0.2),
-              child: Container(
-                padding: EdgeInsets.all(16),
-                width: double.infinity,
-                height: 200,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      '0000 0000 0000 0000',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                      ),
-                    ),
-                    Spacer(),
-                    Text(
-                      'Card Holder Name',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    Text('Expiry Date: 00/00', style: TextStyle(fontWeight: FontWeight.bold)),
-                  ],
-                ),
-              ),
-            ),
-            SizedBox(height: 20),
             TextField(
+              controller: cardHolderNameController,
               decoration: InputDecoration(
                 labelText: 'Card Holder Name',
                 filled: true,
@@ -173,6 +111,7 @@ class AddCardScreen extends StatelessWidget {
             ),
             SizedBox(height: 10),
             TextField(
+              controller: cardNumberController,
               keyboardType: TextInputType.number,
               decoration: InputDecoration(
                 labelText: 'Card Number',
@@ -182,33 +121,15 @@ class AddCardScreen extends StatelessWidget {
               ),
             ),
             SizedBox(height: 10),
-            Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    keyboardType: TextInputType.datetime,
-                    decoration: InputDecoration(
-                      labelText: 'Expiry Date',
-                      filled: true,
-                      fillColor: Colors.cyanAccent.withOpacity(0.1),
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                ),
-                SizedBox(width: 10),
-                Expanded(
-                  child: TextField(
-                    keyboardType: TextInputType.number,
-                    obscureText: true,
-                    decoration: InputDecoration(
-                      labelText: 'CVV',
-                      filled: true,
-                      fillColor: Colors.cyanAccent.withOpacity(0.1),
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                ),
-              ],
+            TextField(
+              controller: expiryDateController,
+              keyboardType: TextInputType.datetime,
+              decoration: InputDecoration(
+                labelText: 'Expiry Date (MM/YY)',
+                filled: true,
+                fillColor: Colors.cyanAccent.withOpacity(0.1),
+                border: OutlineInputBorder(),
+              ),
             ),
             SizedBox(height: 20),
             SizedBox(
@@ -217,7 +138,13 @@ class AddCardScreen extends StatelessWidget {
                 onPressed: () {
                   Navigator.pushReplacement(
                     context,
-                    MaterialPageRoute(builder: (context) => HomePage()),
+                    MaterialPageRoute(
+                      builder: (context) => SavedCardPage(
+                        cardNumber: cardNumberController.text,
+                        cardHolderName: cardHolderNameController.text,
+                        expiryDate: expiryDateController.text,
+                      ),
+                    ),
                   );
                 },
                 style: ElevatedButton.styleFrom(

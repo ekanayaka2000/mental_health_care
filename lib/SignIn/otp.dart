@@ -88,7 +88,7 @@ class _OTPPageState extends State<OTPPage> {
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(60.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
