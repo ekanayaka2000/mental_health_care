@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../Home/home.dart'; // Import the HomePage
+import 'saved.dart'; // Import the SavedPage
 
 class NotesScreen extends StatelessWidget {
   final List<String> selectedFeelings;
@@ -21,24 +21,24 @@ class NotesScreen extends StatelessWidget {
         elevation: 0,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(50.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Center the "Notes" text
+            // Center the "Notes" text at the top
             Center(
               child: Text(
-                "Notes",
+                "Notes",  // Title displayed at the top
                 style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
                 textAlign: TextAlign.center,
               ),
             ),
-            SizedBox(height: 20),
+            SizedBox(height: 20), // Add some spacing below the title
             Text(
               "Selected Feelings:",
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 10),
+            SizedBox(height: 5),
             Wrap(
               spacing: 8.0,
               runSpacing: 8.0,
@@ -50,7 +50,7 @@ class NotesScreen extends StatelessWidget {
                 );
               }).toList(),
             ),
-            SizedBox(height: 20),
+            SizedBox(height: 10),
             Text(
               "Add notes:",
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
@@ -78,10 +78,12 @@ class NotesScreen extends StatelessWidget {
                     );
                     return;
                   }
-                  // Navigate to HomePage if notes are added
+                  // Navigate to SavedPage if notes are added
                   Navigator.pushReplacement(
                     context,
-                    MaterialPageRoute(builder: (context) => HomePage()),
+                    MaterialPageRoute(
+                      builder: (context) => SavedPage(notes: _notesController.text),
+                    ),
                   );
                 },
                 style: ElevatedButton.styleFrom(

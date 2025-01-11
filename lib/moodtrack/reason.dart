@@ -23,6 +23,28 @@ class _ReasonSelectionScreenState extends State<ReasonSelectionScreen> {
     });
   }
 
+  void handleContinue() {
+    if (selectedReasons.isEmpty) {
+      // Show a message to the user if no reasons are selected
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Please select at least one reason before continuing."),
+        ),
+      );
+    } else {
+      // Navigate to the FeelingSelectionScreen if reasons are selected
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => FeelingSelectionScreen(
+            mood: widget.mood,
+            reasons: selectedReasons,
+          ),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,13 +59,17 @@ class _ReasonSelectionScreenState extends State<ReasonSelectionScreen> {
         elevation: 0,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(36.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               "What is the reason that makes you feel ${widget.mood}?",
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Colors.black87,
+              ),
               textAlign: TextAlign.center,
             ),
             SizedBox(height: 20),
@@ -51,67 +77,46 @@ class _ReasonSelectionScreenState extends State<ReasonSelectionScreen> {
               child: GridView.builder(
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 3,
-                  crossAxisSpacing: 12.0,
                   mainAxisSpacing: 12.0,
-                  childAspectRatio: 2 / 1, // Adjust aspect ratio for better button fit
+                  crossAxisSpacing: 12.0,
                 ),
                 itemCount: reasonList.length,
                 itemBuilder: (context, index) {
                   String reason = reasonList[index];
-                  return _buildReasonButton(reason);
+                  final isSelected = selectedReasons.contains(reason);
+                  return ElevatedButton(
+                    onPressed: () => toggleReasonSelection(reason),
+                    child: Text(reason),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: isSelected ? Colors.cyan : Colors.cyan[100],
+                      foregroundColor: Colors.black,
+                      padding: EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                  );
                 },
               ),
             ),
             SizedBox(height: 20),
             ElevatedButton(
-              onPressed: () {
-                if (selectedReasons.isNotEmpty) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => FeelingSelectionScreen(
-                        mood: widget.mood,
-                        reasons: selectedReasons,
-                      ),
-                    ),
-                  );
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text("Please select at least one reason")),
-                  );
-                }
-              },
+              onPressed: handleContinue,
               style: ElevatedButton.styleFrom(
                 backgroundColor: Color(0xFF00BCD4),
                 minimumSize: Size(double.infinity, 50),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30.0),
                 ),
+                padding: EdgeInsets.symmetric(vertical: 16),
               ),
-              child: Text("Continue", style: TextStyle(fontSize: 18, color: Colors.white)),
+              child: Text(
+                "Continue",
+                style: TextStyle(fontSize: 18, color: Colors.white),
+              ),
             ),
             SizedBox(height: 20),
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildReasonButton(String reason) {
-    final isSelected = selectedReasons.contains(reason);
-    return ElevatedButton(
-      onPressed: () => toggleReasonSelection(reason),
-      child: Text(
-        reason,
-        textAlign: TextAlign.center,
-        style: TextStyle(fontWeight: FontWeight.bold),
-      ),
-      style: ElevatedButton.styleFrom(
-        backgroundColor: isSelected ? Colors.cyan : Colors.cyan[100],
-        foregroundColor: Colors.black,
-        padding: EdgeInsets.symmetric(vertical: 16),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
         ),
       ),
     );

@@ -30,6 +30,27 @@ class _FeelingSelectionScreenState extends State<FeelingSelectionScreen> {
     });
   }
 
+  void handleContinue() {
+    if (selectedFeelings.isEmpty) {
+      // Show a message to the user if no feelings are selected
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Please select at least one feeling before continuing."),
+        ),
+      );
+    } else {
+      // Navigate to the NotesScreen if feelings are selected
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => NotesScreen(
+            selectedFeelings: selectedFeelings,
+          ),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,7 +65,7 @@ class _FeelingSelectionScreenState extends State<FeelingSelectionScreen> {
         elevation: 0,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(36.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -86,18 +107,7 @@ class _FeelingSelectionScreenState extends State<FeelingSelectionScreen> {
             ),
             SizedBox(height: 20),
             ElevatedButton(
-              onPressed: selectedFeelings.isNotEmpty
-                  ? () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => NotesScreen(
-                      selectedFeelings: selectedFeelings,
-                    ),
-                  ),
-                );
-              }
-                  : null,
+              onPressed: handleContinue,
               style: ElevatedButton.styleFrom(
                 backgroundColor: Color(0xFF00BCD4),
                 minimumSize: Size(double.infinity, 50),
