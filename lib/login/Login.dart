@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../SignUp/signup.dart'; // Import the Sign Up page
-import '../SignIn/signin.dart'; // Import the Sign In page
+import '../SignUp/signup.dart';
+import '../SignIn/signin.dart';
 
 class LoginPage extends StatelessWidget {
   @override
@@ -73,7 +73,6 @@ class LoginPage extends StatelessWidget {
               ),
             ],
           ),
-
           const Spacer(),
         ],
       ),
