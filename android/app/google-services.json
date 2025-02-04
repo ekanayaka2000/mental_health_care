@@ -1,18 +1,24 @@
 {
   "project_info": {
     "project_number": "876829031480",
+    "firebase_url": "https://healthcare-7b637-default-rtdb.firebaseio.com",
     "project_id": "healthcare-7b637",
     "storage_bucket": "healthcare-7b637.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:876829031480:android:7693d3d1f07d30cf493acd",
+        "mobilesdk_app_id": "1:876829031480:android:fb3a7e150365adf9493acd",
         "android_client_info": {
-          "package_name": "com.example.mental_health_care"
+          "package_name": "com.example.mental_h"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "876829031480-2ba621ur80dci9ln0hii9280ha4knook.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyD7CwiP8mlBdM01BMc16IN-lj1GDTiuXbI"
@@ -20,7 +26,55 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "876829031480-2ba621ur80dci9ln0hii9280ha4knook.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "876829031480-fsutlboldllihlh9o20uo1gqdk1l2toq.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.mentalHealthCare"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:876829031480:android:7693d3d1f07d30cf493acd",
+        "android_client_info": {
+          "package_name": "com.example.mental_health_care"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "876829031480-2ba621ur80dci9ln0hii9280ha4knook.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD7CwiP8mlBdM01BMc16IN-lj1GDTiuXbI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "876829031480-2ba621ur80dci9ln0hii9280ha4knook.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "876829031480-fsutlboldllihlh9o20uo1gqdk1l2toq.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.mentalHealthCare"
+              }
+            }
+          ]
         }
       }
     }

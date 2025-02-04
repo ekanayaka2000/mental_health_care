@@ -18,6 +18,7 @@ dependencies:
   syncfusion_flutter_gauges: ^20.3.38
   firebase_core: ^3.10.0
   firebase_auth: ^5.4.0
+  cloud_firestore: ^5.6.1
 
 dev_dependencies:
   flutter_test:

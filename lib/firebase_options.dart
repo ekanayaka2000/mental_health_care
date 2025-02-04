@@ -52,6 +52,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '876829031480',
     projectId: 'healthcare-7b637',
     authDomain: 'healthcare-7b637.firebaseapp.com',
+    databaseURL: 'https://healthcare-7b637-default-rtdb.firebaseio.com',
     storageBucket: 'healthcare-7b637.firebasestorage.app',
     measurementId: 'G-P0B9KQCG8R',
   );
@@ -61,6 +62,7 @@ class DefaultFirebaseOptions {
     appId: '1:876829031480:android:7693d3d1f07d30cf493acd',
     messagingSenderId: '876829031480',
     projectId: 'healthcare-7b637',
+    databaseURL: 'https://healthcare-7b637-default-rtdb.firebaseio.com',
     storageBucket: 'healthcare-7b637.firebasestorage.app',
   );
 
@@ -69,7 +71,10 @@ class DefaultFirebaseOptions {
     appId: '1:876829031480:ios:f5450652bdbb8c03493acd',
     messagingSenderId: '876829031480',
     projectId: 'healthcare-7b637',
+    databaseURL: 'https://healthcare-7b637-default-rtdb.firebaseio.com',
     storageBucket: 'healthcare-7b637.firebasestorage.app',
+    iosClientId: '876829031480-fsutlboldllihlh9o20uo1gqdk1l2toq.apps.googleusercontent.com',
     iosBundleId: 'com.example.mentalHealthCare',
   );
+
 }

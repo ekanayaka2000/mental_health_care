@@ -1,5 +1,6 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'Gender.dart';
 import '../SignIn/signin.dart';
 
@@ -14,6 +15,49 @@ class _SignUpPageState extends State<SignUpPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>(); // Form key for validation
+
+  Future<void> _handleSignUp() async {
+    String email = _emailController.text.trim();
+    String password = _passwordController.text.trim();
+
+    if (!_isChecked) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Please agree to the terms and conditions.")),
+      );
+      return;
+    }
+
+    if (_formKey.currentState!.validate()) {
+      try {
+        // Create user in Firebase Authentication
+        UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: email,
+          password: password,
+        );
+
+        // Save user data to Firestore
+        FirebaseFirestore.instance.collection('users').doc(userCredential.user!.uid).set({
+          'email': email,
+          'gender': null, // Gender will be selected in the next step
+          'createdAt': FieldValue.serverTimestamp(),
+        });
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Sign-up successful!")),
+        );
+
+        // Navigate to the next page (Gender selection)
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => GenderPage()),
+        );
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Sign-up failed: $e")),
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -125,24 +169,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 ),
                 const SizedBox(height: 16),
                 ElevatedButton(
-                  onPressed: () {
-                    if (_isChecked) {
-                      if (_formKey.currentState!.validate()) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => GenderPage()),
-                        );
-                      }
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: const Text(
-                            "Please agree to the terms and conditions.",
-                          ),
-                        ),
-                      );
-                    }
-                  },
+                  onPressed: _handleSignUp,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF00BCD4),
                     minimumSize: const Size(double.infinity, 50),
@@ -159,11 +186,11 @@ class _SignUpPageState extends State<SignUpPage> {
                 GestureDetector(
                   onTap: () {
                     Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(builder: (_) => SignInPage())
+                      context,
+                      MaterialPageRoute(builder: (_) => SignInPage()),
                     );
                   },
-                  child: Text(
+                  child: const Text(
                     "Already have an account? Sign In",
                     style: TextStyle(
                       color: Color(0xFF00BCD4),
