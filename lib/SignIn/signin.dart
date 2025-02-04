@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import '../SignUp/signup.dart'; // Import the SignUp page
-import '../Home/home.dart'; // Import the Home page
-import 'forget_password.dart'; // Import the Forget Password page
+import 'package:firebase_auth/firebase_auth.dart';
+import '../SignUp/signup.dart';
+import '../Home/home.dart';
+import 'forget_password.dart';
 
 class SignInPage extends StatefulWidget {
   @override
@@ -12,25 +13,56 @@ class _SignInPageState extends State<SignInPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   bool _isPasswordVisible = false;
   bool _isLoading = false;
+  String? _errorMessage;
 
-  void _signInUser() {
+  Future<void> _signInUser() async {
+    if (!_formKey.currentState!.validate()) return;
+
     setState(() {
       _isLoading = true;
+      _errorMessage = null;
     });
 
-    Future.delayed(Duration(seconds: 2), () {
+    try {
+      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
+      );
+
+      if (userCredential.user != null) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => HomePage()),
+        );
+      }
+    } on FirebaseAuthException catch (e) {
+      setState(() {
+        switch (e.code) {
+          case 'user-not-found':
+            _errorMessage = 'No account found with this email. Please sign up first.';
+            break;
+          case 'wrong-password':
+            _errorMessage = 'The password you entered is incorrect. Please check and try again.';
+            break;
+          case 'invalid-credential':
+            _errorMessage = 'Invalid credentials. Please check your email and password.';
+            break;
+          case 'user-disabled':
+            _errorMessage = 'This account has been disabled. Contact support for help.';
+            break;
+          default:
+            _errorMessage = 'Error: ${e.message}';
+        }
+      });
+    } finally {
       setState(() {
         _isLoading = false;
       });
-
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => HomePage()),
-      );
-    });
+    }
   }
 
   @override
@@ -54,10 +86,7 @@ class _SignInPageState extends State<SignInPage> {
               const SizedBox(height: 20),
               const Text(
                 "Welcome Back!",
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 8),
@@ -94,12 +123,9 @@ class _SignInPageState extends State<SignInPage> {
                   border: const OutlineInputBorder(),
                   suffixIcon: GestureDetector(
                     onLongPress: () => setState(() => _isPasswordVisible = true),
-                    onLongPressUp: () =>
-                        setState(() => _isPasswordVisible = false),
+                    onLongPressUp: () => setState(() => _isPasswordVisible = false),
                     child: Icon(
-                      _isPasswordVisible
-                          ? Icons.visibility
-                          : Icons.visibility_off,
+                      _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
                     ),
                   ),
                 ),
@@ -110,6 +136,15 @@ class _SignInPageState extends State<SignInPage> {
                   return null;
                 },
               ),
+              if (_errorMessage != null)
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  child: Text(
+                    _errorMessage!,
+                    style: const TextStyle(color: Colors.red),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
               const SizedBox(height: 8),
               GestureDetector(
                 onTap: () {
@@ -126,21 +161,7 @@ class _SignInPageState extends State<SignInPage> {
               ),
               const SizedBox(height: 24),
               ElevatedButton(
-                onPressed: _isLoading
-                    ? null
-                    : () {
-                  if (_formKey.currentState!.validate()) {
-                    _signInUser();
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text(
-                          "Please fill in all the required fields.",
-                        ),
-                      ),
-                    );
-                  }
-                },
+                onPressed: _isLoading ? null : _signInUser,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF00BCD4),
                   minimumSize: const Size(double.infinity, 50),
@@ -159,13 +180,13 @@ class _SignInPageState extends State<SignInPage> {
               GestureDetector(
                 onTap: () {
                   Navigator.pushReplacement(
-                      context, MaterialPageRoute(builder: (_) => SignUpPage()));
+                    context,
+                    MaterialPageRoute(builder: (_) => SignUpPage()),
+                  );
                 },
                 child: const Text(
                   "Don't have an account? Sign Up",
-                  style: TextStyle(
-                    color: Color(0xFF00BCD4),
-                  ),
+                  style: TextStyle(color: Color(0xFF00BCD4)),
                   textAlign: TextAlign.center,
                 ),
               ),
