@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'Age.dart'; // Import the age.dart file
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'Age.dart'; // Import AgePage
 
 class GenderPage extends StatefulWidget {
   @override
@@ -8,7 +10,27 @@ class GenderPage extends StatefulWidget {
 
 class _GenderPageState extends State<GenderPage> {
   String selectedGender = ''; // Track the selected gender
-  bool _isLoading = false; // Track loading state (you can use this for future enhancements like a loading indicator)
+  bool _isLoading = false; // Track loading state
+
+  // Function to store gender in Firestore
+  Future<void> storeGenderInFirestore() async {
+    User? user = FirebaseAuth.instance.currentUser; // Get current user
+    if (user != null) {
+      String userId = user.uid; // Get user ID
+
+      CollectionReference users = FirebaseFirestore.instance.collection('users');
+
+      await users.doc(userId).set({
+        'gender': selectedGender,
+      }, SetOptions(merge: true)).then((_) {
+        print("Gender updated successfully!");
+      }).catchError((error) {
+        print("Failed to update gender: $error");
+      });
+    } else {
+      print("No user logged in!");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +41,7 @@ class _GenderPageState extends State<GenderPage> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () {
-            Navigator.pop(context); // Navigate back to the previous screen
+            Navigator.pop(context); // Navigate back
           },
         ),
       ),
@@ -30,11 +52,10 @@ class _GenderPageState extends State<GenderPage> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // Top section for logo and text
             Column(
               children: [
                 Image.asset(
-                  'assets/Logo1.png', // Replace with your logo image path
+                  'assets/Logo1.png', // Replace with your logo
                   height: 80,
                 ),
                 const SizedBox(height: 20),
@@ -51,8 +72,6 @@ class _GenderPageState extends State<GenderPage> {
                 ),
               ],
             ),
-
-            // Middle section for gender options
             Column(
               children: [
                 Row(
@@ -105,23 +124,29 @@ class _GenderPageState extends State<GenderPage> {
                 ),
               ],
             ),
-
-            // Bottom section for the "Continue" button
             Padding(
               padding: const EdgeInsets.only(bottom: 60.0),
               child: ElevatedButton(
                 onPressed: _isLoading
-                    ? null // Button will be disabled if _isLoading is true
-                    : () {
+                    ? null
+                    : () async {
                   if (selectedGender.isEmpty) {
-                    // Show SnackBar if gender is not selected
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text("Please select a gender."),
                       ),
                     );
                   } else {
-                    // Navigate to AgePage if gender is selected
+                    setState(() {
+                      _isLoading = true; // Show loading state
+                    });
+
+                    await storeGenderInFirestore(); // Save gender to Firestore
+
+                    setState(() {
+                      _isLoading = false;
+                    });
+
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -131,17 +156,17 @@ class _GenderPageState extends State<GenderPage> {
                   }
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF00BCD4), // Always keep the color as specified
+                  backgroundColor: const Color(0xFF00BCD4),
                   minimumSize: const Size(double.infinity, 50),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(50),
                   ),
                 ),
-                child: Text(
+                child: _isLoading
+                    ? CircularProgressIndicator(color: Colors.white)
+                    : Text(
                   'Continue',
-                  style: TextStyle(
-                    color: Colors.white, // Keep the text color white
-                  ),
+                  style: TextStyle(color: Colors.white),
                 ),
               ),
             ),

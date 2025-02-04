@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'mental_health_causes.dart'; // Import the MentalHealthCausesPage
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'age.dart'; // Import AgePage
+import 'mental_health_causes.dart';
 
 class GoalsPage extends StatefulWidget {
   @override
@@ -18,6 +21,35 @@ class _GoalsPageState extends State<GoalsPage> {
 
   bool get hasSelectedGoals => selectedGoals.contains(true);
 
+  Future<void> saveSelectedGoals() async {
+    try {
+      // Get the logged-in user's UID
+      String? userId = FirebaseAuth.instance.currentUser?.uid;
+      if (userId == null) {
+        print("⚠ Error: User is not authenticated.");
+        return;
+      }
+
+      // Filter selected goals
+      List<String> selectedGoalsList = [];
+      for (int i = 0; i < goals.length; i++) {
+        if (selectedGoals[i]) {
+          selectedGoalsList.add(goals[i]);
+        }
+      }
+
+      // Save selected goals under the user's Firestore document
+      await FirebaseFirestore.instance.collection('users').doc(userId).set({
+        'selected_goals': selectedGoalsList,
+      }, SetOptions(merge: true));
+
+      print("✅ Goals successfully saved!");
+
+    } catch (e) {
+      print("❌ Error saving goals: $e");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,7 +59,11 @@ class _GoalsPageState extends State<GoalsPage> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () {
-            Navigator.pop(context); // Navigate back to the previous screen
+            // Navigate back to AgePage
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => AgePage()),
+            );
           },
         ),
       ),
@@ -37,12 +73,12 @@ class _GoalsPageState extends State<GoalsPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            // Top section with logo, title, and description
+            // Top section
             Column(
               children: [
                 Center(
                   child: Image.asset(
-                    'assets/Logo1.png', // Replace with your logo asset path
+                    'assets/Logo1.png', // Replace with your logo
                     height: 80,
                   ),
                 ),
@@ -84,9 +120,9 @@ class _GoalsPageState extends State<GoalsPage> {
             Padding(
               padding: const EdgeInsets.only(bottom: 50.0),
               child: ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   if (hasSelectedGoals) {
-                    // Navigate to the MentalHealthCausesPage
+                    await saveSelectedGoals(); // Save goals to Firestore
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
@@ -94,7 +130,7 @@ class _GoalsPageState extends State<GoalsPage> {
                       ),
                     );
                   } else {
-                    // Show SnackBar if no goals are selected
+                    // Show error message if no goals are selected
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
                         content: Text("Please select at least one goal."),

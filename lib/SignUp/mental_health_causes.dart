@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'Goals.dart'; // Import the GoalsPage
-import 'Happiness.dart'; // Import the HappinessPage
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'Goals.dart'; // Import GoalsPage
+import 'Happiness.dart'; // Import HappinessPage
 
 class MentalHealthCausesPage extends StatefulWidget {
   @override
@@ -19,6 +21,35 @@ class _MentalHealthCausesPageState extends State<MentalHealthCausesPage> {
 
   bool get hasSelectedCauses => selectedCauses.contains(true);
 
+  Future<void> saveSelectedCauses() async {
+    try {
+      // Get the logged-in user's UID
+      String? userId = FirebaseAuth.instance.currentUser?.uid;
+      if (userId == null) {
+        print("⚠ Error: User is not authenticated.");
+        return;
+      }
+
+      // Filter selected causes
+      List<String> selectedCausesList = [];
+      for (int i = 0; i < causes.length; i++) {
+        if (selectedCauses[i]) {
+          selectedCausesList.add(causes[i]);
+        }
+      }
+
+      // Save selected causes under the user's Firestore document
+      await FirebaseFirestore.instance.collection('users').doc(userId).set({
+        'selected_causes': selectedCausesList,
+      }, SetOptions(merge: true));
+
+      print("✅ Mental health causes successfully saved!");
+
+    } catch (e) {
+      print("❌ Error saving causes: $e");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,7 +60,7 @@ class _MentalHealthCausesPageState extends State<MentalHealthCausesPage> {
           icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () {
             // Navigate back to the GoalsPage
-            Navigator.push(
+            Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (context) => GoalsPage()),
             );
@@ -90,21 +121,14 @@ class _MentalHealthCausesPageState extends State<MentalHealthCausesPage> {
             Padding(
               padding: const EdgeInsets.only(bottom: 40.0),
               child: ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   if (hasSelectedCauses) {
-                    // Gather the selected causes
-                    List<String> selectedCausesList = causes
-                        .asMap()
-                        .entries
-                        .where((entry) => selectedCauses[entry.key])
-                        .map((entry) => entry.value)
-                        .toList();
-
-                    // Navigate to the HappinessPage
-                    Navigator.push(
+                    await saveSelectedCauses(); // Save causes to Firestore
+                    Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => HappinessPage()),
+                        builder: (context) => HappinessPage(),
+                      ),
                     );
                   } else {
                     // Show a message if no causes are selected

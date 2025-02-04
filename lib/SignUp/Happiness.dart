@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'created.dart'; // Import the CreatedPage
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'created.dart'; // Import CreatedPage
 
 class HappinessPage extends StatefulWidget {
   @override
@@ -16,17 +18,38 @@ class _HappinessPageState extends State<HappinessPage> {
   ];
   int selectedHappiness = -1;
 
-  void _handleFinishButtonPressed() {
+  Future<void> saveHappinessLevel() async {
+    try {
+      // Get the logged-in user's UID
+      String? userId = FirebaseAuth.instance.currentUser?.uid;
+      if (userId == null) {
+        print("⚠ Error: User is not authenticated.");
+        return;
+      }
+
+      // Save selected happiness level under the user's Firestore document
+      await FirebaseFirestore.instance.collection('users').doc(userId).set({
+        'happiness_level': happinessLevels[selectedHappiness],
+      }, SetOptions(merge: true));
+
+      print("✅ Happiness level successfully saved!");
+    } catch (e) {
+      print("❌ Error saving happiness level: $e");
+    }
+  }
+
+  void _handleFinishButtonPressed() async {
     if (selectedHappiness == -1) {
       // Show a message if no happiness level is selected
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text('Please select your happiness level.'),
-          duration: const Duration(seconds: 2),
+        const SnackBar(
+          content: Text('Please select your happiness level.'),
+          duration: Duration(seconds: 2),
         ),
       );
     } else {
-      // Navigate to the CreatedPage if happiness level is selected
+      await saveHappinessLevel(); // Save happiness level to Firestore
+      // Navigate to the CreatedPage
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
