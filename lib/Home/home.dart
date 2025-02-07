@@ -3,6 +3,11 @@ import '../chatbot/chatbot.dart'; // Import the chatbot.dart file
 import '../chatbot/talkcoach.dart'; // Import the talkcoach.dart file
 import '../profile/account.dart'; // Import the profile.dart file
 import '../MoodTrack/moodtrack.dart'; // Import the moodtrack.dart file
+import '../tabs/article.dart';
+import '../tabs/breath.dart';
+import '../tabs/gratitude.dart';
+import '../tabs/journal.dart';
+import '../tabs/meditation.dart';
 import 'introducing.dart';
 
 void main() {
@@ -128,7 +133,10 @@ class HomeContent extends StatelessWidget {
                 "Intro to Meditation",
                 "8 mins",
                 onTap: () {
-                  print("Intro to Meditation tapped");
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => MeditationPage()),
+                  );
                 },
               ),
               _buildTimelinePlanItem(
@@ -137,7 +145,10 @@ class HomeContent extends StatelessWidget {
                 "Mindfulness Techniques",
                 "2 mins",
                 onTap: () {
-                  print("Mindfulness Techniques tapped");
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ArticlePage()),
+                  );
                 },
               ),
               _buildTimelinePlanItem(
@@ -146,7 +157,10 @@ class HomeContent extends StatelessWidget {
                 "Deep Breath Dynamics",
                 "2 - 5 mins",
                 onTap: () {
-                  print("Deep Breath Dynamics tapped");
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => BreathPage()),
+                  );
                 },
               ),
               _buildTimelinePlanItem(
@@ -155,7 +169,10 @@ class HomeContent extends StatelessWidget {
                 "What activities usually match",
                 "30s - 1 min",
                 onTap: () {
-                  print("Smart Journal tapped");
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => JournalPage()),
+                  );
                 },
               ),
               _buildTimelinePlanItem(
@@ -164,7 +181,10 @@ class HomeContent extends StatelessWidget {
                 "Gratitude Meditation",
                 "10 mins",
                 onTap: () {
-                  print("Gratitude Meditation tapped");
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => GratitudePage()),
+                  );
                 },
               ),
             ],
