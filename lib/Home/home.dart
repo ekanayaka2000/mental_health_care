@@ -8,7 +8,9 @@ import '../tabs/breath.dart';
 import '../tabs/gratitude.dart';
 import '../tabs/journal.dart';
 import '../tabs/meditation.dart';
+import 'analytics.dart';
 import 'introducing.dart';
+import 'library.dart';
 
 void main() {
   runApp(MyApp());
@@ -42,8 +44,8 @@ class _HomePageState extends State<HomePage> {
 
   final List<Widget> _pages = [
     HomeContent(),
-    Text("Library Page"),
-    Text("Analytics Page"), // Removed AnalyticsPage, just for frontend
+    LibraryPage(),
+    AnalyticsPage(),
     AccountPage(),
   ];
 
